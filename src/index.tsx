@@ -4,19 +4,25 @@ import { Provider, connect } from 'react-redux';
 import { Router, Route, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import Navbar from './pages/components/navbar';
-import Footer from './pages/components/footer';
 import Home from './pages/home';
 import store from './flux';
 import './index.scss';
+
+// tslint:disable-next-line:no-var-requires
+const enUS = require('antd/lib/locale-provider/en_US');
+// tslint:disable-next-line:no-var-requires
+const LocaleProvider = require('antd').LocaleProvider;
 const history = syncHistoryWithStore(browserHistory, store);
 
 const layout = (component: JSX.Element) => React.createClass({
   render() {
     return (
-      <div style={{ minHeight: '100%', position: 'relative' }}>
+      <div>
         <Navbar />
+        <div style={{ margin: '1em auto 0', padding: '0 2em', 
+          maxWidth: '1550px', minWidth: '780px' }}>
           {component}
-        <Footer />
+        </div>
       </div>
     );
   },
@@ -24,11 +30,11 @@ const layout = (component: JSX.Element) => React.createClass({
 
 ReactDOM.render(
   <Provider store={store}>
-    <div style={{ flex: 1 }}>
+    <LocaleProvider locale={enUS}>
       <Router history={history}>
         <Route path='*' component={layout(<Home />)} />
       </Router>
-    </div>
+    </LocaleProvider>
   </Provider>,
   document.getElementById('container'),
 );
