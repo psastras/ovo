@@ -1,0 +1,17 @@
+{
+  "extends": "tslint:recommended",
+  "rules": {
+    "quotemark": [true, "single", "avoid-escape"],
+    "interface-name": [true, "never-prefix"],
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
+    "no-bitwise": false,
+    "one-variable-per-declaration": [ false ],
+    "member-access": false,
+    "curly": false,
+    "object-literal-sort-keys": false,
+    "no-unused-variable": false,
+    "eofline": false,
+    "max-line-length": [true, 100],
+    "ordered-imports": [ false ]
+  }
+}

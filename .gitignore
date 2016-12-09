@@ -1,0 +1,14 @@
+.DS_Store
+node_modules/
+dist/
+npm-debug.log*
+test/unit/coverage
+test/e2e/reports
+selenium-debug.log
+.build/
+typings/
+.nyc_output/
+yarn-error.log
+.tmp
+.vscode
+coverage

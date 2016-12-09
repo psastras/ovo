@@ -1,0 +1,15 @@
+@import 'src/colors.scss';
+
+#footer {
+  background: $black;
+  padding: 1em 0;
+  color: $white;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  h4 {
+    color: $white;
+  }
+}
