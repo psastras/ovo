@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Provider, connect } from 'react-redux';
+import { Provider } from 'react-redux';
 import { Router, Route, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import Navbar from './pages/components/navbar';
@@ -21,7 +21,9 @@ const layout = (component: JSX.Element) => React.createClass({
         <Navbar />
         <div style={{ margin: '1em auto 0', padding: '0 2em', 
           maxWidth: '1550px', minWidth: '780px' }}>
-          {component}
+          {React.cloneElement(component, {
+            location: this.props.location
+          })}
         </div>
       </div>
     );
@@ -32,7 +34,7 @@ ReactDOM.render(
   <Provider store={store}>
     <LocaleProvider locale={enUS}>
       <Router history={history}>
-        <Route path='*' component={layout(<Home />)} />
+        <Route path='/' component={layout(<Home />)} />
       </Router>
     </LocaleProvider>
   </Provider>,

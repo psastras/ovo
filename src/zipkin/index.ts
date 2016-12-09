@@ -105,10 +105,10 @@ export const getTraces = async (serviceName: string, start: number,
   const response = await request.get(`${zipkinUrl}/api/v1/traces`)
     .query({
       serviceName,
-      limit,
+      limit: limit > 0 ? limit : 100,
       endTs: end,
       lookback: end - start,
-      minDuration,
+      minDuration: minDuration > 0 ? minDuration : undefined,
       spanName,
       annotationQuery
     });

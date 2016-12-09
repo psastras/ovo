@@ -1,8 +1,10 @@
 import { applyMiddleware, createStore } from 'redux';
+import { combineReducers } from 'redux';
 import * as promiseMiddleware from 'redux-promise';
-import reducers from './reducers';
+import { zipkinReducer} from './reducers';
 import { browserHistory } from 'react-router';
 import { routerMiddleware as createRouterMiddleware } from 'react-router-redux';
+import { routerReducer } from 'react-router-redux';
 
 const routerMiddleware = createRouterMiddleware(browserHistory);
 const middleware = [routerMiddleware, promiseMiddleware];
@@ -15,7 +17,10 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const store = createStore(
-  reducers,
+  combineReducers({
+    zipkin: zipkinReducer,
+    routing: routerReducer
+  }),
   applyMiddleware(...middleware),
 );
 

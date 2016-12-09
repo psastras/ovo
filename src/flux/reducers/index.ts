@@ -1,5 +1,3 @@
-import { combineReducers } from 'redux';
-import { routerReducer } from 'react-router-redux';
 import { handleActions, ActionMeta } from 'redux-actions';
 import { message } from 'antd';
 import { SpanNode } from 'src/zipkin';
@@ -37,10 +35,4 @@ export const zipkinReducer = handleActions({
 }, {
   services: [],
   traces: []
-});
-
-
-export default combineReducers<State>({
-  routing: routerReducer,
-  zipkin: zipkinReducer
 });
