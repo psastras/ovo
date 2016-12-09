@@ -5,6 +5,7 @@ import { SpanNode } from 'src/zipkin';
 export interface ZipkinState {
   services: Array<string>;
   traces: Array<SpanNode>;
+  trace: SpanNode;
 }
 
 export interface State {
@@ -13,7 +14,7 @@ export interface State {
 }
 
 export const zipkinReducer = handleActions({
-  GET_SERVICE_NAMES: (state: ZipkinState, action: ActionMeta<Array<string>, {}>) => {
+  GET_SERVICE_NAMES: (state: ZipkinState, action: ActionMeta<any, {}>) => {
     if (action.error) {
       message.error(`Error fetching service names from Zipkin`);
     } else {
@@ -23,7 +24,7 @@ export const zipkinReducer = handleActions({
     }
     return state;
   },
-  GET_TRACES: (state: ZipkinState, action: ActionMeta<Array<any>, {}>) => {
+  GET_TRACES: (state: ZipkinState, action: ActionMeta<any, {}>) => {
     if (action.error) {
       message.error(`Error fetching traces from Zipkin`);
     } else {
@@ -31,8 +32,18 @@ export const zipkinReducer = handleActions({
         traces: action.payload,
       });
     }
-  }
+  },
+  GET_TRACE: (state: ZipkinState, action: ActionMeta<any, {}>) => {
+    if (action.error) {
+      message.error(`Error fetching trace from Zipkin`);
+    } else {
+      return Object.assign({}, state, {
+        trace: action.payload,
+      });
+    }
+  },
 }, {
   services: [],
-  traces: []
+  traces: [],
+  trace: undefined,
 });

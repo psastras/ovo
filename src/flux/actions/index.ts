@@ -14,11 +14,20 @@ export const getServiceNames = createAction('GET_SERVICE_NAMES', async () => {
   }
 });
 
-export const getTraces = createAction('GET_TRACES', async (serviceName: string, start: number, 
+export const getTraces = createAction('GET_TRACES', async (serviceName: string, start: number,
   end: number, limit: number, minDuration: number) => {
   try {
     NProgress.start();
     return await Zipkin.getTraces(serviceName, start, end, limit, minDuration);
+  } finally {
+    NProgress.done();
+  }
+});
+
+export const getTrace = createAction('GET_TRACE', async (traceId: string) => {
+  try {
+    NProgress.start();
+    return await Zipkin.getTrace(traceId);
   } finally {
     NProgress.done();
   }

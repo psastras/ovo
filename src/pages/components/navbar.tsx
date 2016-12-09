@@ -5,12 +5,12 @@ import { State } from 'src/flux/reducers';
 import { connect } from 'react-redux';
 
 interface NavbarProps {
-  path?: string;
+  location?: any;
 };
 
 export class Navbar extends React.Component<NavbarProps, {}> {
   public render(): JSX.Element {
-    const { path } = this.props;
+    const path = this.props.location.pathname;
     return (
       <Affix>
         <Menu
@@ -29,7 +29,7 @@ export class Navbar extends React.Component<NavbarProps, {}> {
 
 const mapStateToProps = (state: State, props: NavbarProps): NavbarProps => {
   return {
-    path: state.routing.locationBeforeTransitions.pathname,
+    location: props.location,
   };
 };
 

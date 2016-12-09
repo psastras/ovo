@@ -49,10 +49,20 @@ export class SpanNode {
   }
 
   public getServiceName(): string {
-    const maybeAnnotation = (this.span.annotations || [])
+    let maybeAnnotation = (this.span.annotations || [])
       .filter(annotation => annotation && annotation.endpoint && annotation.value)
       .filter(annotation => annotation.value === 'sr' || annotation.value === 'ss')
       .find(annotation => !!annotation.endpoint.serviceName);
+    if (maybeAnnotation) {
+      return maybeAnnotation.endpoint.serviceName;
+    }
+
+    // fall back to using the client annotatio name
+    maybeAnnotation = (this.span.annotations || [])
+      .filter(annotation => annotation && annotation.endpoint && annotation.value)
+      .filter(annotation => annotation.value === 'cs' || annotation.value === 'cr')
+      .find(annotation => !!annotation.endpoint.serviceName);
+
     return maybeAnnotation ? maybeAnnotation.endpoint.serviceName : undefined;
   }
 
@@ -97,6 +107,11 @@ export const parseSpans = (spans: Span[]): SpanNode => {
     }
   }
   return root;
+};
+
+export const getTrace = async (traceId: string): Promise<any> => {
+  const response = await request.get(`${zipkinUrl}/api/v1/trace/${traceId}`);
+  return parseSpans(JSON.parse(response.text) as Span[]);
 };
 
 export const getServices = async (): Promise<string[]> => {

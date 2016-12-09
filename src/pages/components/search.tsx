@@ -23,7 +23,7 @@ const selectBefore = (names: string[], onServiceChange: any, defaultValue: strin
       }
     </Select>
   );
-}
+};
 
 interface SearchProps {
   getServiceNames?: any;
@@ -31,7 +31,7 @@ interface SearchProps {
   pushRoute?: any;
   zipkin?: ZipkinState;
   location?: any;
-}
+};
 
 interface SearchState {
   service?: string;
@@ -40,25 +40,25 @@ interface SearchState {
   duration?: number;
   spans?: number;
   annotationQuery?: string;
-}
+};
 
 export class Search extends React.Component<SearchProps, SearchState> {
-
-  constructor() {
-    super();
-    this.state = {
-      service: undefined,
-      start: moment().startOf('day').valueOf(),
-      end: moment().valueOf(),
-      duration: 0,
-      spans: 100,
-      annotationQuery: undefined,
-    }
-  }
 
   public readonly refs: {
     annotation: Input;
     service: Select;
+  }
+
+  constructor() {
+    super();
+    this.state = {
+      annotationQuery: undefined,
+      duration: 0,
+      end: moment().valueOf(),
+      service: undefined,
+      spans: 100,
+      start: moment().startOf('day').valueOf(),
+    };
   }
 
   public componentWillMount(): void {

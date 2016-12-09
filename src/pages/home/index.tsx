@@ -23,6 +23,6 @@ const mapStateToProps = (state: {}, props: HomeProps): HomeProps => {
   return {
     location: props.location,
   }
-}
+};
 
 export default connect(mapStateToProps)(Home);

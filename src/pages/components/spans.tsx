@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { State, ZipkinState } from 'src/flux/reducers';
 import { SpanNode } from 'src/zipkin';
 import { push } from 'react-router-redux';
+import { Link } from 'react-router';
 import * as moment from 'moment';
 
 const Option = Select.Option;
@@ -28,8 +29,8 @@ export class Trace extends React.Component<TraceProps, {}> {
     const serviceSpanStats = trace.getSeviceSpanStats();
     const serviceName = trace.getServiceName();
     return (
-      <a href='' style={{ color: 'black' }}>
-        <Card title={`${serviceName} / ${trace.span.id}`}
+      <Link to={`/trace/${trace.span.traceId}`} style={{ color: 'black' }}>
+        <Card title={`${serviceName} / ${trace.span.traceId}`}
           extra={`${moment(trace.span.timestamp / 1000).fromNow()} / ${((trace.span.duration || 0) / 1000).toFixed(2)} ms`}
           bordered={false}>
           {[...serviceSpanStats.entries()].map((entry, i) => {
@@ -42,8 +43,8 @@ export class Trace extends React.Component<TraceProps, {}> {
             );
           })}
         </Card>
-      </a>
-    )
+      </Link>
+    );
   }
 }
 
@@ -110,14 +111,14 @@ export class Traces extends React.Component<TracesProps, TraceState> {
 
 const mapDispatchToProps = (dispatch): TracesProps => {
   return {
-    pushRoute: (route) => dispatch(push(route))
+    pushRoute: (route) => dispatch(push(route)),
   };
 };
 
 const mapStateToProps = (state: State, props: TracesProps): TracesProps => {
   return {
-    zipkin: state.zipkin,
     location: props.location,
+    zipkin: state.zipkin,
   };
 };
 
