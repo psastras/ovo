@@ -3,12 +3,13 @@ import { Select, Card, Tag, Row, Col } from 'antd';
 import { connect } from 'react-redux';
 import { State, ZipkinState } from 'src/flux/reducers';
 import { SpanNode } from 'src/zipkin';
+import { push } from 'react-router-redux';
 import * as moment from 'moment';
 
 const Option = Select.Option;
 
 interface TraceProps {
-  trace: SpanNode
+  trace: SpanNode;
 }
 
 interface TraceState {
@@ -16,7 +17,9 @@ interface TraceState {
 }
 
 interface TracesProps {
-  zipkin?: ZipkinState
+  zipkin?: ZipkinState;
+  location?: any;
+  pushRoute?: any;
 }
 
 export class Trace extends React.Component<TraceProps, {}> {
@@ -27,7 +30,7 @@ export class Trace extends React.Component<TraceProps, {}> {
     return (
       <a href='' style={{ color: 'black' }}>
         <Card title={`${serviceName} / ${trace.span.id}`}
-          extra={`${moment(trace.span.timestamp / 1000).fromNow()} / ${(trace.span.duration / 1000).toFixed(2)} ms`}
+          extra={`${moment(trace.span.timestamp / 1000).fromNow()} / ${((trace.span.duration || 0) / 1000).toFixed(2)} ms`}
           bordered={false}>
           {[...serviceSpanStats.entries()].map((entry, i) => {
             const [name, { count, duration }] = entry;
@@ -49,12 +52,14 @@ export class Traces extends React.Component<TracesProps, TraceState> {
   constructor() {
     super();
     this.state = {
-      sort: 'new'
+      sort: 'new',
     };
   }
 
-  private onSortChange = (value) => {
-    this.setState({sort: value});
+  public componentWillReceiveProps(props): void {
+    if (props.location.query.sort) {
+      this.setState({ sort: props.location.query.sort });
+    }
   }
 
   public render(): JSX.Element {
@@ -67,8 +72,9 @@ export class Traces extends React.Component<TracesProps, TraceState> {
           </Col>
           <Col span={12} style={{ textAlign: 'right' }}>
             <span style={{ marginRight: '1em' }}>Sort results by:</span>
-            <Select defaultValue={this.state.sort} 
+            <Select
               onChange={this.onSortChange}
+              value={this.state.sort}
               style={{ width: '200px', margin: '0 0 1em 0' }}>
               <Option value='new'>Newest first</Option>
               <Option value='old'>Oldest first</Option>
@@ -81,10 +87,11 @@ export class Traces extends React.Component<TracesProps, TraceState> {
           {zipkin.traces
             .sort((a, b) => {
               switch(this.state.sort) {
-                case 'new': return a.span.timestamp < b.span.timestamp ? -1 : 1;
-                case 'old': return a.span.timestamp < b.span.timestamp ? 1 : -1;
-                case 'short': return a.span.duration < b.span.duration ? -1 : 1;
-                case 'long': return a.span.duration < b.span.duration ? 1 : -1;
+                case 'new': return a.span.timestamp < b.span.timestamp ? 1 : -1;
+                case 'old': return a.span.timestamp < b.span.timestamp ? -1 : 1;
+                case 'short': return (a.span.duration || 0) < (b.span.duration || 0) ? -1 : 1;
+                case 'long': return (a.span.duration || 0) < (b.span.duration || 0) ? 1 : -1;
+                default: return 0;
               }
             })
             .map((trace, i) => <Trace key={i} trace={trace} />)}
@@ -92,12 +99,26 @@ export class Traces extends React.Component<TracesProps, TraceState> {
       </div>
     );
   }
-}
 
-const mapStateToProps = (state: State, props: TracesProps): TracesProps => {
-  return {
-    zipkin: state.zipkin
+  private onSortChange = (value) => {
+    this.props.pushRoute({
+      query: Object.assign({}, this.props.location.query, { sort: value }),
+    });
   }
 }
 
-export default connect(mapStateToProps)(Traces);
+
+const mapDispatchToProps = (dispatch): TracesProps => {
+  return {
+    pushRoute: (route) => dispatch(push(route))
+  };
+};
+
+const mapStateToProps = (state: State, props: TracesProps): TracesProps => {
+  return {
+    zipkin: state.zipkin,
+    location: props.location,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Traces);

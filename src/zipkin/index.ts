@@ -19,43 +19,46 @@ export interface Span {
   name: string;
   timestamp: number;
   duration: number;
-  annotations: Array<Annotation>;
-  binaryAnnotations: Array<any>;
+  annotations: Annotation[];
+  binaryAnnotations: any[];
 }
 
 export class SpanStats {
-  count: number = 0;
-  duration: number = 0;
+  public count: number = 0;
+  public duration: number = 0;
 
   public accumulate(span: Span): this {
     this.count++;
-
-    const sr = span.annotations.find(annotation => annotation.value === 'sr').timestamp;
-    const ss = span.annotations.find(annotation => annotation.value === 'ss').timestamp;
-    this.duration += ss - sr;
+    const sr = span.annotations.find(annotation => annotation.value === 'sr');
+    const ss = span.annotations.find(annotation => annotation.value === 'ss');
+    if (sr && ss && sr.timestamp && ss.timestamp) {
+      this.duration += ss.timestamp - sr.timestamp;
+    }
     return this;
   }
 }
 
 export class SpanNode {
-  
-  readonly span: Span;
-  readonly children: Array<SpanNode>;
 
-  constructor(span: Span, children: Array<SpanNode>) {
+  public readonly span: Span;
+  public readonly children: SpanNode[];
+
+  constructor(span: Span, children: SpanNode[]) {
     this.span = span;
     this.children = children;
   }
 
   public getServiceName(): string {
-    return this.span.annotations
+    const maybeAnnotation = (this.span.annotations || [])
+      .filter(annotation => annotation && annotation.endpoint && annotation.value)
       .filter(annotation => annotation.value === 'sr' || annotation.value === 'ss')
-      .find(annotation => !!annotation.endpoint.serviceName)
-      .endpoint.serviceName;
+      .find(annotation => !!annotation.endpoint.serviceName);
+    return maybeAnnotation ? maybeAnnotation.endpoint.serviceName : undefined;
   }
 
   public getSeviceSpanStats(spanNode = this as SpanNode,
-    serviceSpanStats = new Map<string, SpanStats>()): Map<string, SpanStats> {
+                            serviceSpanStats = new Map<string, SpanStats>()):
+                            Map<string, SpanStats> {
     const serviceName = spanNode.getServiceName();
     if (!serviceSpanStats.has(serviceName)) {
       serviceSpanStats.set(serviceName, new SpanStats());
@@ -76,7 +79,7 @@ export class SpanNode {
 /**
  * Converts a trace array to a trace tree.
  */
-export const parseSpans = (spans: Array<Span>): SpanNode => {
+export const parseSpans = (spans: Span[]): SpanNode => {
   const spanMap = new Map<string, SpanNode>();
   for (let span of spans) {
     spanMap.set(span.id, new SpanNode(span, []));
@@ -87,21 +90,23 @@ export const parseSpans = (spans: Array<Span>): SpanNode => {
     const spanNode = spanMap.get(span.id);
     if (!span.parentId) {
       root = spanNode;
-    } else {
+    } else if (spanMap.has(span.parentId)) {
       spanMap.get(span.parentId).addChild(spanNode);
+    } else {
+      // no parent id in the span, the data might not be there yet :(
     }
   }
   return root;
-}
+};
 
-export const getServices = async (): Promise<Array<string>> => {
+export const getServices = async (): Promise<string[]> => {
   const response = await request.get(`${zipkinUrl}/api/v1/services`);
   return JSON.parse(response.text);
-}
+};
 
-export const getTraces = async (serviceName: string, start: number, 
-  end: number, limit: number, minDuration: number, spanName: string = 'all',
-  annotationQuery?: string, ): Promise<Array<SpanNode>> => {
+export const getTraces = async (serviceName: string, start: number,
+  end: number, limit: number, minDuration: number, spanName = 'all',
+  annotationQuery?: string, ): Promise<SpanNode[]> => {
   const response = await request.get(`${zipkinUrl}/api/v1/traces`)
     .query({
       serviceName,
@@ -110,7 +115,9 @@ export const getTraces = async (serviceName: string, start: number,
       lookback: end - start,
       minDuration: minDuration > 0 ? minDuration : undefined,
       spanName,
-      annotationQuery
+      annotationQuery,
     });
-  return (JSON.parse(response.text) as Array<Array<Span>>).map(spans => parseSpans(spans));
-}
+  return (JSON.parse(response.text) as Span[][])
+    .map(spans => parseSpans(spans))
+    .filter(node => !!node);
+};

@@ -10,13 +10,13 @@ import * as moment from 'moment';
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 
-const selectBefore = (names: Array<string>, onServiceChange: any) => {
+const selectBefore = (names: string[], onServiceChange: any, defaultValue: string) => {
   return (
     <Select ref='service'
       showSearch
       style={{ width: 200 }}
       onChange={onServiceChange}
-      placeholder='Select a service'>
+      value={defaultValue || 'All Services'} >
       {
         ['All Services'].concat(names.sort())
           .map(name => <Option key={name} value={name}>{name}</Option>)
@@ -52,7 +52,7 @@ export class Search extends React.Component<SearchProps, SearchState> {
       end: moment().valueOf(),
       duration: 0,
       spans: 100,
-      annotationQuery: undefined
+      annotationQuery: undefined,
     }
   }
 
@@ -62,7 +62,6 @@ export class Search extends React.Component<SearchProps, SearchState> {
   }
 
   public componentWillMount(): void {
-    this.props.getTraces(undefined, 0, new Date().getTime(), 100, null);
     this.props.getServiceNames();
   }
 
@@ -83,8 +82,8 @@ export class Search extends React.Component<SearchProps, SearchState> {
       newState.spans !== this.state.spans ||
       newState.annotationQuery !== this.state.annotationQuery) {
       this.props.getTraces(newState.service, newState.start,
-        newState.end, newState.spans, 
-        Math.round(newState.duration / 1000), newState.annotationQuery);
+        newState.end, newState.spans,
+        newState.duration, newState.annotationQuery);
       this.setState(newState);
     }
   }
@@ -93,16 +92,21 @@ export class Search extends React.Component<SearchProps, SearchState> {
     e.preventDefault();
     const annotationQuery = this.refs.annotation.refs.input.value;
     const serviceName = this.state.service === 'All Services' ? undefined : this.state.service;
+    const newState = {
+      service: serviceName,
+      start: this.state.start,
+      end: this.state.end,
+      duration: this.state.duration,
+      spans: this.state.spans,
+      annotationQuery: this.state.annotationQuery,
+    };
+    this.setState(newState);
+    this.props.getTraces(newState.service, newState.start,
+        newState.end, newState.spans,
+        newState.duration, newState.annotationQuery);
     this.props.pushRoute({
-      query: {
-        service: serviceName,
-        start: this.state.start,
-        end: this.state.end,
-        duration: this.state.duration,
-        spans: this.state.spans,
-        annotationQuery: annotationQuery
-      }
-    })
+      query: Object.assign({}, this.props.location.query || {}, newState),
+    });
   }
 
   public onServiceChange = (service: string): void => {
@@ -111,9 +115,9 @@ export class Search extends React.Component<SearchProps, SearchState> {
 
   public onDateRangeChange = (range): void => {
     this.setState({
+      end: range[1].valueOf(),
       start: range[0].valueOf(),
-      end: range[1].valueOf()
-    })
+    });
   }
 
   public onDurationChange = (e): void => {
@@ -143,7 +147,8 @@ export class Search extends React.Component<SearchProps, SearchState> {
           <Col span={18}>
             <Input
               ref='annotation'
-              addonBefore={selectBefore(this.props.zipkin.services, this.onServiceChange)}
+              addonBefore={selectBefore(this.props.zipkin.services, this.onServiceChange,
+                this.state.service)}
               placeholder='Enter optional annotation query' />
           </Col>
           <Col span={6} style={{ textAlign: 'right' }}>
@@ -152,8 +157,8 @@ export class Search extends React.Component<SearchProps, SearchState> {
               format='YYYY-MM-DD HH:mm:ss'
               defaultValue={[moment(this.state.start), moment(this.state.end)]}
               ranges={{
-                Today: [moment().startOf('day'), moment()],
-                'This Month': [moment().startOf('month'), moment()]
+                'This Month': [moment().startOf('month'), moment()],
+                'Today': [moment().startOf('day'), moment()],
               }}
               onChange={this.onDateRangeChange}
               />
@@ -186,10 +191,10 @@ export class Search extends React.Component<SearchProps, SearchState> {
 
 const mapStateToProps = (state: State, props: SearchProps): SearchProps => {
   return {
+    location: props.location,
     zipkin: state.zipkin,
-    location: props.location
   };
-}
+};
 
 const mapDispatchToProps = (dispatch): SearchProps => {
   return {
@@ -200,6 +205,6 @@ const mapDispatchToProps = (dispatch): SearchProps => {
         minDuration)),
     pushRoute: (route) => dispatch(push(route))
   };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);

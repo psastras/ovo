@@ -13,7 +13,7 @@ export class Home extends React.Component<HomeProps, {}> {
     return (
       <div>
         <Search location={this.props.location} />
-        <Spans />
+        <Spans location={this.props.location} />
       </div>
     );
   }
@@ -21,7 +21,7 @@ export class Home extends React.Component<HomeProps, {}> {
 
 const mapStateToProps = (state: {}, props: HomeProps): HomeProps => {
   return {
-    location: props.location
+    location: props.location,
   }
 }
 

@@ -19,7 +19,7 @@ const layout = (component: JSX.Element) => React.createClass({
     return (
       <div>
         <Navbar />
-        <div style={{ margin: '1em auto 0', padding: '0 2em', 
+        <div style={{ margin: '1em auto 0', padding: '0 2em',
           maxWidth: '1550px', minWidth: '780px' }}>
           {React.cloneElement(component, {
             location: this.props.location
