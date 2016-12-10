@@ -83,7 +83,9 @@ export class Search extends React.Component<SearchProps, SearchState> {
       newState.duration !== this.state.duration ||
       newState.spans !== this.state.spans ||
       newState.annotationQuery !== this.state.annotationQuery) {
-      this.props.getSpans(newState.service);
+      if (newState.service) {
+        this.props.getSpans(newState.service);
+      }
       this.props.getTraces(newState.service, newState.start,
         newState.end, newState.spans,
         newState.duration, newState.method, newState.annotationQuery);

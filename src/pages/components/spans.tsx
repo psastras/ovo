@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Select, Card, Tag, Row, Col } from 'antd';
+import { Select, Card, Tag, Row, Col, Alert  } from 'antd';
 import { connect } from 'react-redux';
 import { State, ZipkinState } from 'src/flux/reducers';
 import { SpanNode } from 'src/zipkin';
@@ -66,6 +66,14 @@ export class Traces extends React.Component<TracesProps, TraceState> {
 
   public render(): JSX.Element {
     const { zipkin } = this.props;
+    if (!zipkin.traces || zipkin.traces.length === 0) {
+      return (
+        <Alert message='No traces to display'
+          description='Enter search information above to start.'
+          type='info'
+        />
+      );
+    }
     return (
       <div style={{ margin: '2em 0' }}>
         <Row>
