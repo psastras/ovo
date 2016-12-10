@@ -9,7 +9,6 @@ interface TreeProps {
 export default class Tree extends React.Component<TreeProps, {}> {
   public render(): JSX.Element {
     const { root } = this.props;
-    console.log(root);
     return (
       <div className='tree'>
         <div>
@@ -17,12 +16,36 @@ export default class Tree extends React.Component<TreeProps, {}> {
           <div><h2>Timeline</h2></div>
         </div>
         <div className='tree-label'>
+          <div>&nbsp;</div>
+          <div>
+            <div>
+              {this.renderLabels(root)}
+            </div>
+          </div>
+        </div>
+        <div>
+          <div>&nbsp;</div>
           <div></div>
-          <div>0ms</div>
         </div>
         {this.renderNode(root)}
       </div>
     );
+  }
+
+  private renderLabels(root: SpanNode): JSX.Element[] {
+    const { duration } = root.span;
+
+     // number of markers to display (never with a smaller interval than 1)
+    const numIntervals = Math.min(10, Math.floor(duration / 1000));
+    const interval = Math.floor(duration / numIntervals);
+    const labels = [];
+    for (let i = 0; i < numIntervals; i++) {
+      const offset = (i / numIntervals) * 100;
+      labels.push(
+        <div key={i} style={{ left: `${offset}%`}}>{Math.round(i * interval / 1000)} ms</div>
+      );
+    }
+    return labels;
   }
 
   private renderNode(node: SpanNode, root: SpanNode = node, level = 0): JSX.Element[] {
@@ -46,8 +69,6 @@ export default class Tree extends React.Component<TreeProps, {}> {
     if (nodeCr && nodeCs) {
       nodeClientOffset = (nodeCs - rootSr) / duration * width;
       nodeClientWidth = (nodeCr - nodeCs) / duration * width;
-      console.log(nodeClientWidth);
-      console.log(nodeWidth);
     }
 
     return [
