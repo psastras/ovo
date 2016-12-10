@@ -189,6 +189,12 @@ export const getServices = async (): Promise<string[]> => {
   return JSON.parse(response.text);
 };
 
+export const getSpans = async(serviceName: string): Promise<string[]> => {
+  const response = await request.get(`${zipkinUrl}/api/v1/spans`)
+    .query({ serviceName });
+  return JSON.parse(response.text);
+};
+
 export const getTraces = async (serviceName: string, start: number,
   end: number, limit: number, minDuration: number, spanName = 'all',
   annotationQuery?: string, ): Promise<SpanNode[]> => {

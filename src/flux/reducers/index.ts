@@ -4,6 +4,7 @@ import { SpanNode } from 'src/zipkin';
 
 export interface ZipkinState {
   services: string[];
+  spans: string[];
   traces: SpanNode[];
   trace: SpanNode;
 }
@@ -23,6 +24,15 @@ export const zipkinReducer = handleActions({
       });
     }
     return state;
+  },
+  GET_SPANS: (state: ZipkinState, action: ActionMeta<any, {}>) => {
+    if (action.error) {
+      message.error(`Error fetching spans from Zipkin`);
+    } else {
+      return Object.assign({}, state, {
+        spans: action.payload,
+      });
+    }
   },
   GET_TRACE: (state: ZipkinState, action: ActionMeta<any, {}>) => {
     if (action.error) {
@@ -44,6 +54,7 @@ export const zipkinReducer = handleActions({
   },
 }, {
   services: [],
+  spans: [],
   trace: undefined,
   traces: [],
 });

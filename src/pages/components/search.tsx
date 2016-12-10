@@ -27,6 +27,7 @@ const selectBefore = (names: string[], onServiceChange: any, defaultValue: strin
 
 interface SearchProps {
   getServiceNames?: any;
+  getSpans?: any;
   getTraces?: any;
   pushRoute?: any;
   zipkin?: ZipkinState;
@@ -40,6 +41,7 @@ interface SearchState {
   duration?: number;
   spans?: number;
   annotationQuery?: string;
+  method?: string;
 };
 
 export class Search extends React.Component<SearchProps, SearchState> {
@@ -55,6 +57,7 @@ export class Search extends React.Component<SearchProps, SearchState> {
       annotationQuery: undefined,
       duration: 0,
       end: moment().valueOf(),
+      method: undefined,
       service: undefined,
       spans: 100,
       start: moment().startOf('day').valueOf(),
@@ -63,14 +66,12 @@ export class Search extends React.Component<SearchProps, SearchState> {
 
   public componentWillMount(): void {
     this.props.getServiceNames();
-  }
-
-  public componentWillReceiveProps(props: SearchProps): void {
-    const { query } = props.location;
+    const { query } = this.props.location;
     const newState = {
       annotationQuery: query.annotationQuery || this.state.annotationQuery,
       duration: parseInt(query.duration || this.state.duration, 10),
       end: parseInt(query.end || this.state.end, 10),
+      method: query.method || this.state.method,
       service: query.service || this.state.service,
       spans: parseInt(query.spans || this.state.spans, 10),
       start: parseInt(query.start || this.state.start, 10),
@@ -78,12 +79,14 @@ export class Search extends React.Component<SearchProps, SearchState> {
     if (newState.service !== this.state.service ||
       newState.start !== this.state.start ||
       newState.end !== this.state.end ||
+      newState.method !== this.state.method ||
       newState.duration !== this.state.duration ||
       newState.spans !== this.state.spans ||
       newState.annotationQuery !== this.state.annotationQuery) {
+      this.props.getSpans(newState.service);
       this.props.getTraces(newState.service, newState.start,
         newState.end, newState.spans,
-        newState.duration, newState.annotationQuery);
+        newState.duration, newState.method, newState.annotationQuery);
       this.setState(newState);
     }
   }
@@ -96,14 +99,15 @@ export class Search extends React.Component<SearchProps, SearchState> {
       annotationQuery: this.state.annotationQuery,
       duration: this.state.duration,
       end: this.state.end,
+      method: this.state.method,
       service: serviceName,
       spans: this.state.spans,
       start: this.state.start,
     };
     this.setState(newState);
     this.props.getTraces(newState.service, newState.start,
-        newState.end, newState.spans,
-        newState.duration, newState.annotationQuery);
+      newState.end, newState.spans,
+      newState.duration, newState.method, newState.annotationQuery);
     this.props.pushRoute({
       query: Object.assign({}, this.props.location.query || {}, newState),
     });
@@ -111,6 +115,9 @@ export class Search extends React.Component<SearchProps, SearchState> {
 
   public onServiceChange = (service: string): void => {
     this.setState({ service });
+    if (service && service !== 'All Services') {
+      this.props.getSpans(service);
+    }
   }
 
   public onDateRangeChange = (range): void => {
@@ -134,6 +141,10 @@ export class Search extends React.Component<SearchProps, SearchState> {
     if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') {
       this.setState({ spans: value });
     }
+  }
+
+  public onMethodChange = (e): void => {
+    this.setState({ method: e });
   }
 
   public render(): JSX.Element {
@@ -166,6 +177,18 @@ export class Search extends React.Component<SearchProps, SearchState> {
         </Row>
         <Row gutter={10}>
           <Col span={3}>
+            <Select
+              showSearch
+              placeholder='Select a method'
+              onChange={this.onMethodChange}
+              >
+              <Option key='All' value='all'>All</Option>
+              {this.props.zipkin.spans.map(span =>
+                <Option key={span} value={span}>{span}</Option>,
+              )}
+            </Select>
+          </Col>
+          <Col span={3}>
             <Input
               addonBefore='>='
               addonAfter='ms'
@@ -180,7 +203,7 @@ export class Search extends React.Component<SearchProps, SearchState> {
               value={this.state.spans}
               onChange={this.onSpanChange} />
           </Col>
-          <Col span={18} style={{ textAlign: 'right' }}>
+          <Col span={15} style={{ textAlign: 'right' }}>
             <Button type='primary' htmlType='submit'><Icon type='search' /> Find Traces</Button>
           </Col>
         </Row>
@@ -199,10 +222,12 @@ const mapStateToProps = (state: State, props: SearchProps): SearchProps => {
 const mapDispatchToProps = (dispatch): SearchProps => {
   return {
     getServiceNames: () => dispatch(Actions.getServiceNames()),
+    getSpans: (serviceName: string) => dispatch(Actions.getSpans(serviceName)),
     getTraces: (serviceName: string, start: number,
-      end: number, limit: number, minDuration: number) =>
+      end: number, limit: number, minDuration: number,
+      spanName: string, annotationQuery: string) =>
       dispatch(Actions.getTraces(serviceName, start, end, limit,
-        minDuration)),
+        minDuration, spanName, annotationQuery)),
     pushRoute: (route) => dispatch(push(route)),
   };
 };
