@@ -5236,7 +5236,7 @@ rc-align@2.x:
     dom-align "1.x"
     rc-util "3.x"
 
-rc-animate@2.x, rc-animate@^2.0.2, rc-animate@^2.3.0, rc-animate@~2.3.0:
+rc-animate@2.x, rc-animate@^2.0.2, rc-animate@^2.3.0, rc-animate@^2.3.1, rc-animate@~2.3.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/rc-animate/-/rc-animate-2.3.1.tgz#eacda46bf589d857f640c53953d92e07cb688636"
   dependencies:

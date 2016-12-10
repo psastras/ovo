@@ -6,6 +6,8 @@ import { Annotation, BinaryAnnotation, SpanNode } from 'src/zipkin';
 
 import './tree.scss';
 
+// tslint:disable-next-line
+const Animate = require('rc-animate');
 // tslint:disable-next-line:variable-name
 const Time = Timeline.Item as any;
 const TabPane = Tabs.TabPane;
@@ -33,69 +35,70 @@ export class Annotations extends React.Component<AnnotationsProps, {}> {
   public render(): JSX.Element {
     const { annotations, binaryAnnotations } = this.props;
     return (
-
-      <Tabs defaultActiveKey='1'>
-        <TabPane tab='Annotations' key='1'>
-          <div className='annotations'>
-            <div>
-              <Timeline>
-                {annotations
-                  .sort((a, b) => a.timestamp < b.timestamp ? -1 : 1)
-                  .map((annotation, i) =>
-                    <Time key={i}>
-                      <p>{moment(annotation.timestamp / 1000).format()}</p>
-                      <p>{this.getAnnotationValue(annotation)}</p>
-                      <p>
-                        {annotation.endpoint.ipv4}
-                        {annotation.endpoint.port ? `:${annotation.endpoint.port}` : undefined}
-                        <span> ({annotation.endpoint.serviceName})</span>
-                      </p>
-                    </Time>)
-                }
-              </Timeline>
-            </div>
-            <div>
-              {[...binaryAnnotations
-                .reduce((map, a) => {
-                  if (!map.has(a.endpoint.serviceName)) {
-                    map.set(a.endpoint.serviceName, []);
+      <Animate transitionName='fade' transitionAppear transitionDisappear>
+        <Tabs defaultActiveKey='1'>
+          <TabPane tab='Annotations' key='1'>
+            <div className='annotations'>
+              <div>
+                <Timeline>
+                  {annotations
+                    .sort((a, b) => a.timestamp < b.timestamp ? -1 : 1)
+                    .map((annotation, i) =>
+                      <Time key={i}>
+                        <p>{moment(annotation.timestamp / 1000).format()}</p>
+                        <p>{this.getAnnotationValue(annotation)}</p>
+                        <p>
+                          {annotation.endpoint.ipv4}
+                          {annotation.endpoint.port ? `:${annotation.endpoint.port}` : undefined}
+                          <span> ({annotation.endpoint.serviceName})</span>
+                        </p>
+                      </Time>)
                   }
-                  map.get(a.endpoint.serviceName).push(a);
-                  return map;
-                }, new Map<string, BinaryAnnotation[]>()).entries()]
-                .map(([serviceName, a], i) =>
-                  <div key={i} className='binary-annotations'>
-                    <div>
-                      {serviceName}
-                    </div>
-                    <div>
-                      {a.map((annotation, j) =>
-                        <div key={j}>
-                          <div>{annotation.key}</div>
-                          <div>{annotation.value}</div>
-                          {annotation.endpoint.ipv4 ?
-                            <div>
-                              {annotation.endpoint.ipv4}
-                              {annotation.endpoint.port ?
-                                `:${annotation.endpoint.port}`
-                                : undefined
-                              }
-                            </div> : undefined
-                          }
-                        </div>,
-                      )}
-                    </div>
-                  </div>,
+                </Timeline>
+              </div>
+              <div>
+                {[...binaryAnnotations
+                  .reduce((map, a) => {
+                    if (!map.has(a.endpoint.serviceName)) {
+                      map.set(a.endpoint.serviceName, []);
+                    }
+                    map.get(a.endpoint.serviceName).push(a);
+                    return map;
+                  }, new Map<string, BinaryAnnotation[]>()).entries()]
+                  .map(([serviceName, a], i) =>
+                    <div key={i} className='binary-annotations'>
+                      <div>
+                        {serviceName}
+                      </div>
+                      <div>
+                        {a.map((annotation, j) =>
+                          <div key={j}>
+                            <div>{annotation.key}</div>
+                            <div>{annotation.value}</div>
+                            {annotation.endpoint.ipv4 ?
+                              <div>
+                                {annotation.endpoint.ipv4}
+                                {annotation.endpoint.port ?
+                                  `:${annotation.endpoint.port}`
+                                  : undefined
+                                }
+                              </div> : undefined
+                            }
+                          </div>,
+                        )}
+                      </div>
+                    </div>,
                 )}
+              </div>
             </div>
-          </div>
-        </TabPane>
-        <TabPane tab='JSON' key='2'>
-          <pre style={{ maxHeight: '300px', overflow: 'auto' }}>
-            {jsonFormat(this.props.node)}
-          </pre>
-        </TabPane>
-      </Tabs>
+          </TabPane>
+          <TabPane tab='JSON' key='2'>
+            <pre style={{ maxHeight: '300px', overflow: 'auto' }}>
+              {jsonFormat(this.props.node)}
+            </pre>
+          </TabPane>
+        </Tabs>
+      </Animate>
     );
   }
 
