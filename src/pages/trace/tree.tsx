@@ -2,7 +2,9 @@ import * as React from 'react';
 import * as moment from 'moment';
 import * as jsonFormat from 'json-format';
 import { Timeline, Tabs } from 'antd';
+import { connect } from 'react-redux';
 import { Annotation, BinaryAnnotation, SpanNode } from 'src/zipkin';
+import { State, TreeState as FluxTreeState } from 'src/flux/reducers';
 
 import './tree.scss';
 
@@ -13,7 +15,8 @@ const Time = Timeline.Item as any;
 const TabPane = Tabs.TabPane;
 
 interface TreeProps {
-  root: SpanNode;
+  root?: SpanNode;
+  display?: boolean;
 }
 
 interface TreeState {
@@ -115,7 +118,7 @@ export class Annotations extends React.Component<AnnotationsProps, {}> {
   }
 }
 
-export default class Tree extends React.Component<TreeProps, TreeState> {
+export class Tree extends React.Component<TreeProps, TreeState> {
 
   constructor() {
     super();
@@ -150,6 +153,9 @@ export default class Tree extends React.Component<TreeProps, TreeState> {
   }
 
   private handleRowClick = (id: string): void => {
+    if (this.props.display) {
+      return;
+    }
     const { nodeMeta } = this.state;
     if (!nodeMeta.has(id)) {
       nodeMeta.set(id, {});
@@ -205,7 +211,9 @@ export default class Tree extends React.Component<TreeProps, TreeState> {
           {node.getServiceName() || '--'}
         </div>
         <div style={{ flex: 1 }}>
-          <div className='tree-chart' onClick={() => this.handleRowClick(`${node.span.id}`)}>
+          <div className='tree-chart'
+            style={ this.props.display ? undefined : { cursor: 'pointer' }}
+            onClick={() => this.handleRowClick(`${node.span.id}`)}>
             <div style={{
               left: `${nodeClientOffset || nodeOffset}%`,
               width: `${nodeClientWidth || nodeWidth}%`,
@@ -215,7 +223,8 @@ export default class Tree extends React.Component<TreeProps, TreeState> {
               {Math.round(node.span.duration / 1000)}ms: {node.span.name}
             </div>
           </div>
-          {(nodeMeta.has(node.span.id) && nodeMeta.get(node.span.id).details) ?
+          {this.props.display ||
+            (nodeMeta.has(node.span.id) && nodeMeta.get(node.span.id).details) ?
             <div className='tree-details'>
               <Annotations
                 node={node}
@@ -229,3 +238,11 @@ export default class Tree extends React.Component<TreeProps, TreeState> {
     ].concat(...node.children.map(child => this.renderNode(child, node, level + 1)));
   }
 }
+
+const mapStateToProps = (state: State, props: TreeProps): TreeProps => {
+  return {
+    display: state.tree.display,
+  };
+};
+
+export default connect(mapStateToProps)(Tree);

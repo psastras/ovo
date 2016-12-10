@@ -42,3 +42,8 @@ export const getSpans = createAction('GET_SPANS', async (serviceName: string) =>
     NProgress.done();
   }
 });
+
+export const setDefaultAnnotationDetailsDisplay =
+  createAction('SET_DEFAULT_ANNOTATION_DETAILS_DISPLAY', (display: boolean) => {
+    return display;
+});

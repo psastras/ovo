@@ -9,10 +9,28 @@ export interface ZipkinState {
   trace: SpanNode;
 }
 
+export interface TreeState {
+  display: boolean;
+}
+
 export interface State {
   routing: any;
   zipkin: ZipkinState;
+  tree: TreeState;
 }
+
+export const treeReducer = handleActions({
+  SET_DEFAULT_ANNOTATION_DETAILS_DISPLAY: (state: TreeState, action: ActionMeta<any, {}>) => {
+    if (!action.error) {
+      return Object.assign({}, state, {
+        display: action.payload,
+      });
+    }
+    return state;
+  },
+}, {
+  display: undefined,
+});
 
 export const zipkinReducer = handleActions({
   GET_SERVICE_NAMES: (state: ZipkinState, action: ActionMeta<any, {}>) => {

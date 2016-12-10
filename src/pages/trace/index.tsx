@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import * as Actions from 'src/flux/actions';
 import { State, ZipkinState } from 'src/flux/reducers';
 import { SpanNode } from 'src/zipkin';
+import Search from './search';
 import Tree from './tree';
 
 interface TraceProps {
@@ -27,6 +28,7 @@ export class Trace extends React.Component<TraceProps, {}> {
     return (
       <div>
         <h1>{trace.getServiceName()} / {trace.span.traceId}</h1>
+        <Search />
         <Tree root={trace} />
       </div>
     );
