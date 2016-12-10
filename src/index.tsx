@@ -22,7 +22,7 @@ const layout = (component: JSX.Element) => React.createClass({
   render() {
     return (
       <div>
-        <Navbar location={location} />
+        <Navbar location={location} params={this.props.params} />
         <Animate transitionName='fade' transitionAppear>
           <div style={{
             margin: '1em auto 0', maxWidth: '1550px', minWidth: '780px',

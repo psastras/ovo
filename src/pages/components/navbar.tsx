@@ -1,16 +1,25 @@
 import * as React from 'react';
-import { Menu, Icon, Affix, Input } from 'antd';
+import { push } from 'react-router-redux';
+import { Menu, Icon, Affix, Input, Button, Form } from 'antd';
 import { Link } from 'react-router';
 import { State } from 'src/flux/reducers';
 import { connect } from 'react-redux';
 
 interface NavbarProps {
   location?: any;
+  params?: any;
+  pushRoute?: any;
 };
 
 export class Navbar extends React.Component<NavbarProps, {}> {
+
+  public readonly refs: {
+    trace: Input;
+  };
+
   public render(): JSX.Element {
     const path = this.props.location.pathname;
+    console.log(path);
     return (
       <Affix>
         <Menu
@@ -21,16 +30,41 @@ export class Navbar extends React.Component<NavbarProps, {}> {
           <Menu.Item key='/'>
             <Link to='/'>Explore Tracing Data</Link>
           </Menu.Item>
+          <Menu.Item key={`/trace/${this.props.params.traceId}`}>
+            <Form onSubmit={this.handleSubmitTrace}>
+              View Trace
+              <Input ref='trace'
+                defaultValue={ this.props.params.traceId }
+                placeholder='Enter trace id'
+                style={{ marginLeft: '1em', width: '15em' }} />
+              <Button style={{ marginLeft: '1em' }} type='primary' htmlType='submit'>Go</Button>
+            </Form>
+          </Menu.Item>
         </Menu>
       </Affix>
     );
+  }
+
+  private handleSubmitTrace = (e): void => {
+    e.preventDefault();
+    const traceId = this.refs.trace.refs.input.value as string;
+    if (traceId && traceId.length > 0) {
+      this.props.pushRoute(`/trace/${traceId}`);
+    }
   }
 }
 
 const mapStateToProps = (state: State, props: NavbarProps): NavbarProps => {
   return {
     location: props.location,
+    params: props.params,
   };
 };
 
-export default connect(mapStateToProps)(Navbar);
+const mapDispatchToProps = (dispatch): NavbarProps => {
+  return {
+    pushRoute: (route) => dispatch(push(route)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
