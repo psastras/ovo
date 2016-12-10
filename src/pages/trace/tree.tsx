@@ -45,7 +45,9 @@ export class Annotations extends React.Component<AnnotationsProps, {}> {
                     .sort((a, b) => a.timestamp < b.timestamp ? -1 : 1)
                     .map((annotation, i) =>
                       <Time key={i}>
-                        <p>{moment(annotation.timestamp / 1000).format()}</p>
+                        <p>
+                          {moment(annotation.timestamp / 1000).format('YYYY-MM-DD HH:mm:ss.SSSS')}
+                        </p>
                         <p>{this.getAnnotationValue(annotation)}</p>
                         <p>
                           {annotation.endpoint.ipv4}
