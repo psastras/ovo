@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as moment from 'moment';
 import * as jsonFormat from 'json-format';
-import { Timeline, Tabs } from 'antd';
+import { Timeline, Tabs, Alert } from 'antd';
 import { connect } from 'react-redux';
 import { Annotation, BinaryAnnotation, SpanNode } from 'src/zipkin';
 import { State, TreeState as FluxTreeState } from 'src/flux/reducers';
@@ -62,7 +62,7 @@ export class Annotations extends React.Component<AnnotationsProps, {}> {
                 </Timeline>
               </div>
               <div>
-                {[...binaryAnnotations
+                {binaryAnnotations && binaryAnnotations.length > 0 ? [...binaryAnnotations
                   .reduce((map, a) => {
                     if (!map.has(a.endpoint.serviceName)) {
                       map.set(a.endpoint.serviceName, []);
@@ -93,7 +93,9 @@ export class Annotations extends React.Component<AnnotationsProps, {}> {
                         )}
                       </div>
                     </div>,
-                )}
+                ) :
+                  <Alert message='No binary annotations available' type='info' />
+                }
               </div>
             </div>
           </TabPane>
@@ -212,7 +214,7 @@ export class Tree extends React.Component<TreeProps, TreeState> {
         </div>
         <div style={{ flex: 1 }}>
           <div className='tree-chart'
-            style={ this.props.display ? undefined : { cursor: 'pointer' }}
+            style={this.props.display ? undefined : { cursor: 'pointer' }}
             onClick={() => this.handleRowClick(`${node.span.id}`)}>
             <div style={{
               left: `${nodeClientOffset || nodeOffset}%`,
