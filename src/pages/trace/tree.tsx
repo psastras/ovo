@@ -6,7 +6,23 @@ interface TreeProps {
   root: SpanNode;
 }
 
-export default class Tree extends React.Component<TreeProps, {}> {
+interface TreeState {
+  nodeMeta: Map<string, NodeMeta>
+}
+
+interface NodeMeta {
+  details?: boolean
+}
+
+export default class Tree extends React.Component<TreeProps, TreeState> {
+  
+  constructor() {
+    super();
+    this.state = {
+      nodeMeta: new Map<string, NodeMeta>(),
+    }
+  }
+
   public render(): JSX.Element {
     const { root } = this.props;
     return (
@@ -32,6 +48,16 @@ export default class Tree extends React.Component<TreeProps, {}> {
     );
   }
 
+  private handleRowClick = (id: string): void => {
+    const { nodeMeta } = this.state;
+    if (!nodeMeta.has(id)) {
+      nodeMeta.set(id, {});
+    }
+    const oldMeta = nodeMeta.get(id);
+    nodeMeta.set(id, Object.assign({}, oldMeta, { details: !(oldMeta.details || false) }));
+    this.setState({ nodeMeta: nodeMeta });
+  }
+
   private renderLabels(root: SpanNode): JSX.Element[] {
     const { duration } = root.span;
 
@@ -49,6 +75,7 @@ export default class Tree extends React.Component<TreeProps, {}> {
   }
 
   private renderNode(node: SpanNode, root: SpanNode = node, level = 0): JSX.Element[] {
+    const { nodeMeta } = this.state;
     const width = 100; // percentage of the width to use, need to leave some room for overflow
     
     const { duration } = root.span;
@@ -72,19 +99,25 @@ export default class Tree extends React.Component<TreeProps, {}> {
     }
 
     return [
-      <div key={node.span.id}>
+      <div className='tree-row' key={node.span.id}>
         <div style={{ paddingLeft: `${level * 5}px` }}>
           {node.getServiceName() || '--' }
         </div>
-        <div>
-        <div className='tree-chart'>
-          <div style={{ width: `${nodeClientWidth || nodeWidth}%`,
-            left: `${nodeClientOffset || nodeOffset}%` }} />
-          <div style={{ width: `${nodeWidth}%`, left: `${nodeOffset}%` }} />
-          <div style={{ left: `${nodeOffset}%` }}>
-            {Math.round(node.span.duration / 1000)} ms: {node.span.name}
+        <div style={{ flex: 1 }}>
+          <div className='tree-chart' onClick={() => this.handleRowClick(`${node.span.id}`)}>
+            <div style={{ width: `${nodeClientWidth || nodeWidth}%`,
+              left: `${nodeClientOffset || nodeOffset}%` }} />
+            <div style={{ width: `${nodeWidth}%`, left: `${nodeOffset}%` }} />
+            <div style={{ left: `${nodeOffset}%` }}>
+              {Math.round(node.span.duration / 1000)} ms: {node.span.name}
+            </div>
           </div>
-        </div>
+          { nodeMeta.has(node.span.id) && nodeMeta.get(node.span.id).details ?
+            <div className='tree-details'>
+              {JSON.stringify(node.span.annotations)}
+            </div> :
+            undefined
+          }
         </div>
       </div>,
     ].concat(...node.children.map(child => this.renderNode(child, node, level + 1)))
