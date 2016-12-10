@@ -4,15 +4,24 @@ const request = _request;
 
 const zipkinUrl = 'http://localhost:9411';
 
+export interface Endpoint {
+  serviceName: string;
+  ipv4?: string;
+  port?: number;
+}
+
 export interface Annotation {
   timestamp: number;
   value: 'cs' | 'sr' | 'ss' | 'cr' | string;
-  endpoint: {
-    serviceName: string;
-    ipv4?: string
-    port?: number
-  }
+  endpoint: Endpoint;
 }
+
+export interface BinaryAnnotation {
+  key: string;
+  value: string;
+  endpoint: Endpoint;
+}
+
 export interface Span {
   traceId: string;
   id: string;
@@ -57,47 +66,6 @@ export class SpanNode {
     this.ss = this.getServerSend();
     this.cr = this.getClientReceive();
     this.cs = this.getClientSend();
-  }
-
-  private getServerReceive(): number {
-    // attempt to use the sr annotation, if available
-    const sr = [...this.span.annotations, ...this.span.binaryAnnotations]
-      .find(annotation => annotation.value === 'sr' && !!annotation.timestamp);
-    if (sr) {
-      return sr.timestamp;
-    }
-    // else fall back to the span timestamp
-    return undefined;
-  }
-
-  private getServerSend(): number {
-    // attempt to use the ss annotation, if available
-    const ss = [...this.span.annotations, ...this.span.binaryAnnotations]
-      .find(annotation => annotation.value === 'ss' && !!annotation.timestamp);
-    if (ss) {
-      return ss.timestamp;
-    }
-    return undefined;
-  }
-
-  private getClientReceive() {
-    // attempt to use the cr annotation, if available
-    const cr = [...this.span.annotations, ...this.span.binaryAnnotations]
-      .find(annotation => annotation.value === 'cr' && !!annotation.timestamp);
-    if (cr) {
-      return cr.timestamp;
-    }
-    return undefined;
-  }
-
-  private getClientSend() {
-    // attempt to use the cs annotation, if available
-    const cs = [...this.span.annotations, ...this.span.binaryAnnotations]
-      .find(annotation => annotation.value === 'cs' && !!annotation.timestamp);
-    if (cs) {
-      return cs.timestamp;
-    }
-    return undefined;
   }
 
   public getServiceName(): string {
@@ -145,6 +113,47 @@ export class SpanNode {
   public addChild(spanNode: SpanNode): void {
     this.children.push(spanNode);
   }
+
+  private getServerReceive(): number {
+    // attempt to use the sr annotation, if available
+    const sr = [...this.span.annotations, ...this.span.binaryAnnotations]
+      .find(annotation => annotation.value === 'sr' && !!annotation.timestamp);
+    if (sr) {
+      return sr.timestamp;
+    }
+    // else fall back to the span timestamp
+    return undefined;
+  }
+
+  private getServerSend(): number {
+    // attempt to use the ss annotation, if available
+    const ss = [...this.span.annotations, ...this.span.binaryAnnotations]
+      .find(annotation => annotation.value === 'ss' && !!annotation.timestamp);
+    if (ss) {
+      return ss.timestamp;
+    }
+    return undefined;
+  }
+
+  private getClientReceive() {
+    // attempt to use the cr annotation, if available
+    const cr = [...this.span.annotations, ...this.span.binaryAnnotations]
+      .find(annotation => annotation.value === 'cr' && !!annotation.timestamp);
+    if (cr) {
+      return cr.timestamp;
+    }
+    return undefined;
+  }
+
+  private getClientSend() {
+    // attempt to use the cs annotation, if available
+    const cs = [...this.span.annotations, ...this.span.binaryAnnotations]
+      .find(annotation => annotation.value === 'cs' && !!annotation.timestamp);
+    if (cs) {
+      return cs.timestamp;
+    }
+    return undefined;
+  }
 }
 
 /**
@@ -185,13 +194,13 @@ export const getTraces = async (serviceName: string, start: number,
   annotationQuery?: string, ): Promise<SpanNode[]> => {
   const response = await request.get(`${zipkinUrl}/api/v1/traces`)
     .query({
-      serviceName,
-      limit: limit > 0 ? limit : 100,
+      annotationQuery,
       endTs: end,
+      limit: limit > 0 ? limit : 100,
       lookback: end - start,
       minDuration: minDuration > 0 ? minDuration : undefined,
+      serviceName,
       spanName,
-      annotationQuery,
     });
   return (JSON.parse(response.text) as Span[][])
     .map(spans => parseSpans(spans))

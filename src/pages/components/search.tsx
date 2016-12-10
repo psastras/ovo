@@ -47,7 +47,7 @@ export class Search extends React.Component<SearchProps, SearchState> {
   public readonly refs: {
     annotation: Input;
     service: Select;
-  }
+  };
 
   constructor() {
     super();
@@ -68,12 +68,12 @@ export class Search extends React.Component<SearchProps, SearchState> {
   public componentWillReceiveProps(props: SearchProps): void {
     const { query } = props.location;
     const newState = {
-      service: query.service || this.state.service,
-      start: parseInt(query.start || this.state.start),
-      end: parseInt(query.end || this.state.end),
-      duration: parseInt(query.duration || this.state.duration),
-      spans: parseInt(query.spans || this.state.spans),
       annotationQuery: query.annotationQuery || this.state.annotationQuery,
+      duration: parseInt(query.duration || this.state.duration, 10),
+      end: parseInt(query.end || this.state.end, 10),
+      service: query.service || this.state.service,
+      spans: parseInt(query.spans || this.state.spans, 10),
+      start: parseInt(query.start || this.state.start, 10),
     };
     if (newState.service !== this.state.service ||
       newState.start !== this.state.start ||
@@ -93,12 +93,12 @@ export class Search extends React.Component<SearchProps, SearchState> {
     const annotationQuery = this.refs.annotation.refs.input.value;
     const serviceName = this.state.service === 'All Services' ? undefined : this.state.service;
     const newState = {
-      service: serviceName,
-      start: this.state.start,
-      end: this.state.end,
-      duration: this.state.duration,
-      spans: this.state.spans,
       annotationQuery: this.state.annotationQuery,
+      duration: this.state.duration,
+      end: this.state.end,
+      service: serviceName,
+      spans: this.state.spans,
+      start: this.state.start,
     };
     this.setState(newState);
     this.props.getTraces(newState.service, newState.start,
@@ -203,7 +203,7 @@ const mapDispatchToProps = (dispatch): SearchProps => {
       end: number, limit: number, minDuration: number) =>
       dispatch(Actions.getTraces(serviceName, start, end, limit,
         minDuration)),
-    pushRoute: (route) => dispatch(push(route))
+    pushRoute: (route) => dispatch(push(route)),
   };
 };
 

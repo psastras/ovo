@@ -29,9 +29,6 @@
   > div {
     padding: 0.25em 0;
   }
-  &:hover {
-    background: rgb(250, 250, 250);
-  }
 }
 
 .tree-label {
@@ -54,6 +51,12 @@
   width: 100%;
   height: 2em;
   cursor: pointer;
+
+  &:hover {
+    div {
+      text-decoration: underline;
+    }
+  }
 
   > div {
     position: absolute;
@@ -79,5 +82,40 @@
 }
 
 .tree-details {
+  border-top: 1px solid rgb(235, 235, 235);
   padding: 1em 0;
+  margin: 0.5em 0;
+}
+
+.annotations {
+  display: flex;
+
+  > div:first-child {
+    margin-right: auto;
+    min-width: 250px;
+    padding-right: 1em;
+  }
+  
+  > div:last-child {
+    padding-left: 1em;
+    flex-grow: 1;
+  }
+}
+
+.binary-annotations {
+  width: 100%;
+  margin-bottom: 1em;
+
+  > div:first-child {
+    border-bottom: 1px solid rgb(235, 235, 235);
+    margin: 0 0 0.5em 0;
+    padding: 0 0 0.25em 0;
+  }
+
+  > div > div {
+    display: flex;
+    > div {
+      flex: 1;
+    }
+  }
 }

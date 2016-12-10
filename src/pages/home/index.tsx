@@ -22,7 +22,7 @@ export class Home extends React.Component<HomeProps, {}> {
 const mapStateToProps = (state: {}, props: HomeProps): HomeProps => {
   return {
     location: props.location,
-  }
+  };
 };
 
 export default connect(mapStateToProps)(Home);

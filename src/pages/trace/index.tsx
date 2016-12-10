@@ -47,5 +47,4 @@ const mapDispatchToProps = (dispatch): TraceProps => {
   };
 };
 
-
 export default connect(mapStateToProps, mapDispatchToProps)(Trace);

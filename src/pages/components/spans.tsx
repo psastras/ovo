@@ -31,7 +31,8 @@ export class Trace extends React.Component<TraceProps, {}> {
     return (
       <Link to={`/trace/${trace.span.traceId}`} style={{ color: 'black' }}>
         <Card title={`${serviceName} / ${trace.span.traceId}`}
-          extra={`${moment(trace.span.timestamp / 1000).fromNow()} / ${((trace.span.duration || 0) / 1000).toFixed(2)} ms`}
+          extra={`${moment(trace.span.timestamp / 1000).fromNow()} / \
+           ${((trace.span.duration || 0) / 1000).toFixed(2)} ms`}
           bordered={false}>
           {[...serviceSpanStats.entries()].map((entry, i) => {
             const [name, { count, duration }] = entry;
@@ -107,7 +108,6 @@ export class Traces extends React.Component<TracesProps, TraceState> {
     });
   }
 }
-
 
 const mapDispatchToProps = (dispatch): TracesProps => {
   return {

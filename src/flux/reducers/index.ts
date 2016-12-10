@@ -3,8 +3,8 @@ import { message } from 'antd';
 import { SpanNode } from 'src/zipkin';
 
 export interface ZipkinState {
-  services: Array<string>;
-  traces: Array<SpanNode>;
+  services: string[];
+  traces: SpanNode[];
   trace: SpanNode;
 }
 
@@ -24,15 +24,6 @@ export const zipkinReducer = handleActions({
     }
     return state;
   },
-  GET_TRACES: (state: ZipkinState, action: ActionMeta<any, {}>) => {
-    if (action.error) {
-      message.error(`Error fetching traces from Zipkin`);
-    } else {
-      return Object.assign({}, state, {
-        traces: action.payload,
-      });
-    }
-  },
   GET_TRACE: (state: ZipkinState, action: ActionMeta<any, {}>) => {
     if (action.error) {
       message.error(`Error fetching trace from Zipkin`);
@@ -42,8 +33,17 @@ export const zipkinReducer = handleActions({
       });
     }
   },
+  GET_TRACES: (state: ZipkinState, action: ActionMeta<any, {}>) => {
+    if (action.error) {
+      message.error(`Error fetching traces from Zipkin`);
+    } else {
+      return Object.assign({}, state, {
+        traces: action.payload,
+      });
+    }
+  },
 }, {
   services: [],
-  traces: [],
   trace: undefined,
+  traces: [],
 });

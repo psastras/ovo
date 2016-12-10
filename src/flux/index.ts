@@ -18,8 +18,8 @@ if (process.env.NODE_ENV === 'development') {
 
 const store = createStore(
   combineReducers({
-    zipkin: zipkinReducer,
     routing: routerReducer,
+    zipkin: zipkinReducer,
   }),
   applyMiddleware(...middleware),
 );
