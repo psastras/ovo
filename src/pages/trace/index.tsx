@@ -3,9 +3,7 @@ import { connect } from 'react-redux';
 import * as Actions from 'src/flux/actions';
 import { State, ZipkinState } from 'src/flux/reducers';
 import { SpanNode } from 'src/zipkin';
-import { Tree } from 'antd';
-
-const TreeNode = Tree.TreeNode;
+import Tree from './tree';
 
 interface TraceProps {
   location?: any;
@@ -29,33 +27,9 @@ export class Trace extends React.Component<TraceProps, {}> {
     return (
       <div>
         <h1>{trace.getServiceName()} / {trace.span.traceId}</h1>
-        {this.buildTree(trace)}
+        <Tree root={trace} />
       </div>
     );
-  }
-
-  private buildTree(node: SpanNode, path: string[] = []): JSX.Element {
-    const serviceName = node.getServiceName();
-    const newPath = path.concat(node.span.id);
-    if (!node.span.parentId) {
-      return (
-        <Tree defaultExpandAll>
-          <TreeNode title={serviceName} key={newPath.join('-')}>
-            {node.children.map(child => this.buildTree(child, newPath))}
-          </TreeNode>
-        </Tree>
-      );
-    } else {
-      if (node.children.length > 0) {
-        return (
-          <TreeNode title={`${node.getServiceName()}`} key={newPath.join('-')}>
-            {node.children.map(child => this.buildTree(child, newPath))}
-          </TreeNode>
-        );
-      } else {
-        return <TreeNode title={`${node.getServiceName()}`} key={newPath.join('-')} />;
-      }
-    }
   }
 }
 
