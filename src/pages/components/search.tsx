@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Card, Input, Select, Button, Row, Col, Form, DatePicker, InputNumber } from 'antd';
+import { Card, Input, Select, Button, Row, Col, Form, DatePicker, InputNumber, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { State, ZipkinState } from 'src/flux/reducers';
 import { push } from 'react-router-redux';
@@ -181,7 +181,7 @@ export class Search extends React.Component<SearchProps, SearchState> {
               onChange={this.onSpanChange} />
           </Col>
           <Col span={18} style={{ textAlign: 'right' }}>
-            <Button type='primary' htmlType='submit'>Find Traces</Button>
+            <Button type='primary' htmlType='submit'><Icon type='search' /> Find Traces</Button>
           </Col>
         </Row>
       </Form>

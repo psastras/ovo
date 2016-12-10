@@ -19,7 +19,6 @@ export class Navbar extends React.Component<NavbarProps, {}> {
 
   public render(): JSX.Element {
     const path = this.props.location.pathname;
-    console.log(path);
     return (
       <Affix>
         <Menu
@@ -39,6 +38,9 @@ export class Navbar extends React.Component<NavbarProps, {}> {
                 style={{ marginLeft: '1em', width: '15em' }} />
               <Button style={{ marginLeft: '1em' }} type='primary' htmlType='submit'>Go</Button>
             </Form>
+          </Menu.Item>
+          <Menu.Item key='github' style={{ float: 'right' }}>
+            <a href='https://github.com/psastras/ovo' target='_blank'><Icon type='github' /></a>
           </Menu.Item>
         </Menu>
       </Affix>
