@@ -20,7 +20,8 @@ interface TreeProps {
 }
 
 interface TreeState {
-  nodeMeta: Map<string, NodeMeta>;
+  nodeMeta?: Map<string, NodeMeta>;
+  width?: number;
 }
 
 interface NodeMeta {
@@ -126,6 +127,7 @@ export class Tree extends React.Component<TreeProps, TreeState> {
     super();
     this.state = {
       nodeMeta: new Map<string, NodeMeta>(),
+      width: 95,
     };
   }
 
@@ -169,13 +171,14 @@ export class Tree extends React.Component<TreeProps, TreeState> {
 
   private renderLabels(root: SpanNode): JSX.Element[] {
     const { duration } = root.span;
+    const { width } = this.state;
 
     // number of markers to display (never with a smaller interval than 1)
     const numIntervals = Math.min(10, Math.floor(duration / 1000));
     const interval = Math.floor(duration / numIntervals);
     const labels = [];
     for (let i = 0; i < numIntervals; i++) {
-      const offset = (i / numIntervals) * 100;
+      const offset = (i / numIntervals) * width;
       labels.push(
         <div key={i} style={{ left: `${offset}%` }}>{Math.round(i * interval / 1000)}ms</div>,
       );
@@ -184,8 +187,7 @@ export class Tree extends React.Component<TreeProps, TreeState> {
   }
 
   private renderNode(node: SpanNode, root: SpanNode = node, level = 0): JSX.Element[] {
-    const { nodeMeta } = this.state;
-    const width = 100; // percentage of the width to use, need to leave some room for overflow
+    const { nodeMeta, width } = this.state;
 
     const { duration } = root.span;
     const rootSr = root.sr || root.span.timestamp;
@@ -193,7 +195,7 @@ export class Tree extends React.Component<TreeProps, TreeState> {
 
     // the receiving service bar
     const nodeSr = node.sr || node.span.timestamp;
-    const nodeSs = node.ss || node.span.timestamp + duration;
+    const nodeSs = node.ss || node.span.timestamp + node.span.duration;
     const nodeOffset = (nodeSr - rootSr) / duration * width;
     const nodeWidth = (nodeSs - nodeSr) / duration * width;
 

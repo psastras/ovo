@@ -80,7 +80,9 @@ export class SpanNode {
 
     // try to grab from endpoint binary annotation
     maybeAnnotation = (this.span.binaryAnnotations || [])
-      .filter(annotation => annotation && annotation.endpoint && annotation.value)
+      .filter(annotation => annotation && annotation.endpoint && annotation.key)
+      .filter(annotation => annotation.key === 'sa' || annotation.key === 'lc'
+      || annotation.key === 'ca')
       .find(annotation => !!annotation.endpoint.serviceName);
     if (maybeAnnotation) {
       return maybeAnnotation.endpoint.serviceName;
