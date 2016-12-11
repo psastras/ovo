@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as moment from 'moment';
 import * as jsonFormat from 'json-format';
-import { Timeline, Tabs, Alert } from 'antd';
+import { Timeline, Tabs, Alert, Icon, Button } from 'antd';
 import { connect } from 'react-redux';
 import { Annotation, BinaryAnnotation, SpanNode } from 'src/zipkin';
 import { State, TreeState as FluxTreeState } from 'src/flux/reducers';
@@ -25,7 +25,8 @@ interface TreeState {
 }
 
 interface NodeMeta {
-  details?: boolean;
+  details: boolean;
+  expanded: boolean;
 }
 
 interface AnnotationsProps {
@@ -131,29 +132,61 @@ export class Tree extends React.Component<TreeProps, TreeState> {
     };
   }
 
+  public componentWillMount(): void {
+    const nodeMeta = [...this.props.root.entries()].reduce((map, [node, level]) => {
+      map.set(node.span.id, { details: false, expanded: level < 2 });
+      return map;
+    }, new Map<string, NodeMeta>());
+    this.setState({ nodeMeta });
+  }
+
   public render(): JSX.Element {
     const { root } = this.props;
     return (
-      <div className='tree'>
-        <div>
-          <div><h2>Service</h2></div>
-          <div><h2>Timeline</h2></div>
+      <div>
+        <div className='tree-form'>
+          <Button onClick={this.handleExpandAll} style={{ marginRight: '1em' }}>Expand All</Button>
+          <Button onClick={this.handleCollapseAll}>Collapse All</Button>
         </div>
-        <div className='tree-label'>
-          <div>&nbsp;</div>
+        <div className='tree'>
           <div>
+            <div><h2>Service</h2></div>
+            <div><h2>Timeline</h2></div>
+          </div>
+          <div className='tree-label'>
+            <div>&nbsp;</div>
             <div>
-              {this.renderLabels(root)}
+              <div>
+                {this.renderLabels(root)}
+              </div>
             </div>
           </div>
+          <div>
+            <div>&nbsp;</div>
+            <div></div>
+          </div>
+          {this.renderNode(root)}
         </div>
-        <div>
-          <div>&nbsp;</div>
-          <div></div>
-        </div>
-        {this.renderNode(root)}
       </div>
     );
+  }
+
+  private handleExpandAll = (): void => {
+    const { nodeMeta } = this.state;
+    for (let id of nodeMeta.keys()) {
+      const oldMeta = nodeMeta.get(id);
+      nodeMeta.set(id, Object.assign({}, oldMeta, { expanded: true }));
+    }
+    this.setState({ nodeMeta });
+  }
+
+  private handleCollapseAll = (): void => {
+    const nodeMeta = [...this.props.root.entries()].reduce((map, [node, level]) => {
+      const oldMeta = this.state.nodeMeta.get(node.span.id);
+      map.set(node.span.id, Object.assign({}, oldMeta, { expanded: level < 2 }));
+      return map;
+    }, new Map<string, NodeMeta>());
+    this.setState({ nodeMeta });
   }
 
   private handleRowClick = (id: string): void => {
@@ -161,11 +194,15 @@ export class Tree extends React.Component<TreeProps, TreeState> {
       return;
     }
     const { nodeMeta } = this.state;
-    if (!nodeMeta.has(id)) {
-      nodeMeta.set(id, {});
-    }
     const oldMeta = nodeMeta.get(id);
-    nodeMeta.set(id, Object.assign({}, oldMeta, { details: !(oldMeta.details || false) }));
+    nodeMeta.set(id, Object.assign({}, oldMeta, { details: !oldMeta.details }));
+    this.setState({ nodeMeta });
+  }
+
+  private handleServiceClick = (id: string): void => {
+    const { nodeMeta } = this.state;
+    const oldMeta = nodeMeta.get(id);
+    nodeMeta.set(id, Object.assign({}, oldMeta, { expanded: !oldMeta.expanded }));
     this.setState({ nodeMeta });
   }
 
@@ -209,10 +246,20 @@ export class Tree extends React.Component<TreeProps, TreeState> {
       nodeClientWidth = (nodeCr - nodeCs) / duration * width;
     }
 
-    return [
+    const meta = nodeMeta.get(node.span.id);
+
+    let ret = [
       <div className='tree-row' key={node.span.id}>
-        <div style={{ paddingLeft: `${level * 5}px` }}>
-          {node.getServiceName() || '--'}
+        <div className='tree-service-name'
+          style={{ paddingLeft: `${level * 5}px` }}
+          onClick={() => this.handleServiceClick(`${node.span.id}`)}>
+          {node.children && node.children.length > 0 ?
+            <Icon type={meta.expanded ? 'caret-down' : 'caret-right'}
+              style={{verticalAlign: 'middle', fontSize: '0.75em', marginRight: '0.5em' }}/>
+          : <span style={{ marginLeft: '1em' }}></span> }
+          <span style={{ verticalAlign: 'middle' }}>
+            {node.getServiceName() || '--'}
+          </span>
         </div>
         <div style={{ flex: 1 }}>
           <div className='tree-chart'
@@ -227,8 +274,7 @@ export class Tree extends React.Component<TreeProps, TreeState> {
               {Math.round(node.span.duration / 1000)}ms: {node.span.name}
             </div>
           </div>
-          {this.props.display ||
-            (nodeMeta.has(node.span.id) && nodeMeta.get(node.span.id).details) ?
+          {this.props.display || meta.details ?
             <div className='tree-details'>
               <Annotations
                 node={node}
@@ -239,7 +285,13 @@ export class Tree extends React.Component<TreeProps, TreeState> {
           }
         </div>
       </div>,
-    ].concat(...node.children.map(child => this.renderNode(child, node, level + 1)));
+    ];
+
+    if (meta.expanded) {
+      ret = ret.concat(...node.children.map(child => this.renderNode(child, node, level + 1)));
+    }
+
+    return ret;
   }
 }
 

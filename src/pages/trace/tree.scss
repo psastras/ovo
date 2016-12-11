@@ -46,6 +46,17 @@
   }
 }
 
+.tree-form {
+  text-align: right;
+}
+
+.tree-service-name {
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .tree-chart {
   position: relative;
   width: 100%;

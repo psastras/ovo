@@ -68,6 +68,30 @@ export class SpanNode {
     this.cs = this.getClientSend();
   }
 
+  public entries(): IterableIterator<[SpanNode, number]> {
+    let nodeQueue = [ [this, 0] ] as Array<[SpanNode, number]>;
+    return {
+      next(): IteratorResult<[SpanNode, number]> {
+        if (nodeQueue.length === 0) {
+          return { done: true, value: undefined };
+        }
+        const [node, level] = nodeQueue.pop();
+        for (let child of node.children) {
+          nodeQueue.push([ child, level + 1 ]);
+        }
+        return { done: false, value: [ node, level ] };
+      },
+
+      [Symbol.iterator](): IterableIterator<[SpanNode, number]> {
+        return this;
+      },
+    };
+  }
+
+  public [Symbol.iterator](): IterableIterator<[SpanNode, number]> {
+    return this.entries();
+  }
+
   public getServiceName(): string {
     // try to grab from endpoint annotation
     let maybeAnnotation = (this.span.annotations || [])
