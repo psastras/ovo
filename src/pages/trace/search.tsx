@@ -5,8 +5,6 @@ import { Tag, Row, Col, Checkbox } from 'antd';
 import * as Actions from 'src/flux/actions';
 import './search.scss';
 
-const CheckableTag = Tag.CheckableTag;
-
 interface SearchProps {
   zipkin?: ZipkinState;
   tree?: TreeState;
@@ -39,12 +37,11 @@ export class Search extends React.Component<SearchProps, {}> {
         <Row>
           <Col span={24}>
             {[...stats.entries()].map(([name, stat]) =>
-              <CheckableTag
+              <Tag
                 key={name}
-                checked={true}
                 >
                 {name} x {stat.count}
-              </CheckableTag>,
+              </Tag>,
             )}
           </Col>
         </Row>
