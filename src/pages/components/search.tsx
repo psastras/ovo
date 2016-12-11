@@ -60,7 +60,7 @@ export class Search extends React.Component<SearchProps, SearchState> {
       method: undefined,
       service: undefined,
       spans: 100,
-      start: moment().startOf('day').valueOf(),
+      start: moment().subtract(1, 'months').valueOf(),
     };
   }
 
@@ -170,8 +170,9 @@ export class Search extends React.Component<SearchProps, SearchState> {
               format='YYYY-MM-DD HH:mm:ss'
               defaultValue={[moment(this.state.start), moment(this.state.end)]}
               ranges={{
-                'This Month': [moment().startOf('month'), moment()],
-                'Today': [moment().startOf('day'), moment()],
+                'Last month': [moment().subtract(1, 'months'), moment()],
+                'Last week': [moment().subtract(1, 'weeks'), moment()],
+                'Last day': [moment().subtract(1, 'days'), moment()], // tslint:disable-line
               }}
               onChange={this.onDateRangeChange}
               />
