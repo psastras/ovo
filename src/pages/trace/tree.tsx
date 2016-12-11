@@ -124,16 +124,19 @@ export class Annotations extends React.Component<AnnotationsProps, {}> {
 
 export class Tree extends React.Component<TreeProps, TreeState> {
 
-  constructor() {
+  constructor(props: TreeProps) {
     super();
     this.state = {
-      nodeMeta: new Map<string, NodeMeta>(),
+      nodeMeta: [...props.root.entries()].reduce((map, [node, level]) => {
+      map.set(node.span.id, { details: false, expanded: level < 2 });
+      return map;
+    }, new Map<string, NodeMeta>()),
       width: 95,
     };
   }
 
-  public componentWillMount(): void {
-    const nodeMeta = [...this.props.root.entries()].reduce((map, [node, level]) => {
+  public componentWillReceiveProps(props: TreeProps): void {
+    const nodeMeta = [...props.root.entries()].reduce((map, [node, level]) => {
       map.set(node.span.id, { details: false, expanded: level < 2 });
       return map;
     }, new Map<string, NodeMeta>());
