@@ -3,6 +3,29 @@
 [![CircleCI](https://circleci.com/gh/psastras/ovo.svg?style=shield&circle-token=:circle-ci-badge-token)](https://circleci.com/gh/psastras/ovo/tree/master)
 [![codecov](https://codecov.io/gh/psastras/ovo/branch/master/graph/badge.svg)](https://codecov.io/gh/psastras/ovo)
 
+An alternate Zipkin UI.
+
+## Running
+
+### Node
+
+To launch the server which will serve files out of `dist/`
+
+```
+node index.js
+```
+
+Note that this expects Zipkin to be running on `http://localhost:9411`.
+
+### Docker
+
+To quickly launch a demo the provided Docker compose file will launch both Zipkin and the UI.
+
+```
+docker-compose build
+docker-compose up
+```
+
 ## Development
 
 The preferred way to install dependencies is [Yarn](https://github.com/yarnpkg/yarn).  This repo
