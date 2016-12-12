@@ -18,7 +18,11 @@ npm -i g @psastras/ovo
 ovo
 ```
 
-Note that this expects Zipkin to be running on `http://localhost:9411`.
+Note that this starts expects Zipkin to be running on `http://localhost:9411` and the UI server
+on port 8080.
+
+`ovo` accepts a custom port number via `-p` and a custom Zipkin host via `-h` (use the `--help`)
+argument for a list of supported options.
 
 
 ### Node
