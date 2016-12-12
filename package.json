@@ -3,7 +3,7 @@
   "bin": {
     "ovo": "./index.js"
   },
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "An alternate Zipkin UI",
   "keywords": ["zipkin", "zipkinui", "zipkin-ui"],
   "main": "src/index.tsx",
