@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --config webpack.config.prod.js --progress",
     "build:test": "rimraf .build && webpack --config webpack.config.test.js",
-    "postinstall": "selenium-standalone install",
+    "build:server": "webpack --config server/webpack.config.js --progress",
+    "install:selenium": "selenium-standalone install",
     "pretest": "npm-run-all build:test",
     "test": "nyc ava --verbose",
     "precitest": "npm-run-all build:test",
@@ -17,6 +18,7 @@
     "integrationtest:test": "ava '.build/integration-test/**/*.js' --verbose -c 1",
     "integrationtest:runner": "node .build/integration-test/_runner.ts",
     "integrationtest": "npm-run-all build integrationtest:runner",
+    "server": "node dist/server.js",
     "watch": "npm-run-all --parallel watch:*",
     "watch:server": "webpack-dev-server",
     "watch:test": "webpack --config webpack.config.test.js --watch",
@@ -39,6 +41,8 @@
   },
   "devDependencies": {
     "@types/enzyme": "^2.5.39",
+    "@types/express": "^4.0.34",
+    "@types/moment": "^2.13.0",
     "@types/node": "^0.0.0",
     "@types/nprogress": "^0.0.29",
     "@types/react": "^0.14.50",
@@ -93,8 +97,8 @@
     "webpack-node-externals": "^1.5.4"
   },
   "dependencies": {
-    "@types/moment": "^2.13.0",
     "antd": "^2.5.1",
+    "express": "^4.14.0",
     "json-format": "^0.1.2",
     "moment": "^2.17.1",
     "nprogress": "^0.2.0",
@@ -109,7 +113,12 @@
     "redux-actions": "^1.1.0",
     "redux-logger": "^2.7.4",
     "redux-promise": "^0.5.3",
-    "superagent": "^3.1.0"
+    "request": "^2.79.0",
+    "superagent": "^3.1.0",
+    "zipkin": "^0.5.0",
+    "zipkin-context-cls": "^0.2.1",
+    "zipkin-instrumentation-express": "^0.5.0",
+    "zipkin-transport-http": "^0.5.0"
   },
   "repository": {
     "type": "git",

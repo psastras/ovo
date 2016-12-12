@@ -128,9 +128,9 @@ export class Tree extends React.Component<TreeProps, TreeState> {
     super();
     this.state = {
       nodeMeta: [...props.root.entries()].reduce((map, [node, level]) => {
-      map.set(node.span.id, { details: false, expanded: level < 2 });
-      return map;
-    }, new Map<string, NodeMeta>()),
+        map.set(node.span.id, { details: false, expanded: level < 2 });
+        return map;
+      }, new Map<string, NodeMeta>()),
       width: 95,
     };
   }
@@ -258,8 +258,8 @@ export class Tree extends React.Component<TreeProps, TreeState> {
           onClick={() => this.handleServiceClick(`${node.span.id}`)}>
           {node.children && node.children.length > 0 ?
             <Icon type={meta.expanded ? 'caret-down' : 'caret-right'}
-              style={{verticalAlign: 'middle', fontSize: '0.75em', marginRight: '0.5em' }}/>
-          : <span style={{ marginLeft: '1em' }}></span> }
+              style={{ verticalAlign: 'middle', fontSize: '0.75em', marginRight: '0.5em' }} />
+            : <span style={{ marginLeft: '1em' }}></span>}
           <span style={{ verticalAlign: 'middle' }}>
             {node.getServiceName() || '--'}
           </span>

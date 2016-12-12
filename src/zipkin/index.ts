@@ -2,7 +2,7 @@ import * as _request from 'superagent';
 import * as moment from 'moment';
 const request = _request;
 
-const zipkinUrl = 'http://localhost:9411';
+const zipkinUrl = '/api';
 
 export interface Endpoint {
   serviceName: string;
