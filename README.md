@@ -15,6 +15,7 @@ The web server is available via the npm repository.
 
 ```
 npm -i g @psastras/ovo
+ovo
 ```
 
 Note that this expects Zipkin to be running on `http://localhost:9411`.
