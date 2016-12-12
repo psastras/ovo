@@ -3,9 +3,22 @@
 [![CircleCI](https://circleci.com/gh/psastras/ovo.svg?style=shield&circle-token=:circle-ci-badge-token)](https://circleci.com/gh/psastras/ovo/tree/master)
 [![codecov](https://codecov.io/gh/psastras/ovo/branch/master/graph/badge.svg)](https://codecov.io/gh/psastras/ovo)
 
-An alternate Zipkin UI.
+An alternate [Zipkin](http://zipkin.io/) UI.
+
+![Screenshot](/screenshot.png "Screenshot")
 
 ## Running
+
+### npm
+
+The web server is available via the npm repository.
+
+```
+npm -i g @psastras/ovo
+```
+
+Note that this expects Zipkin to be running on `http://localhost:9411`.
+
 
 ### Node
 
