@@ -4,9 +4,10 @@ const express = require('express');
 const request = require('request');
 const process = require('process');
 const program = require('commander');
+const path = require('path');
 
 program
-  .version('1.0.5')
+  .version('1.0.7')
   .option('-p, --port <port>', 'Port number (navigate to localhost:port to view the web page)')
   .option('-h, --host <host>', 'Zipkin host (default is http://localhost:9411)')
   .parse(process.argv);
@@ -28,7 +29,7 @@ app.use('/api/', (req, res) => {
 });
 
 
-app.use(express.static('dist'));
+app.use(express.static(path.join(__dirname, 'dist')));
 
 app.listen(serverPort, () => {
   console.log(`Listening on port ${serverPort}`);
