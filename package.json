@@ -3,8 +3,9 @@
   "bin": {
     "ovo": "./index.js"
   },
-  "version": "1.0.1",
-  "description": "",
+  "version": "1.0.2",
+  "description": "An alternate Zipkin UI",
+  "keywords": ["zipkin", "zipkinui", "zipkin-ui"],
   "main": "src/index.tsx",
   "scripts": {
     "build": "webpack --config webpack.config.prod.js --progress",
