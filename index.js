@@ -6,7 +6,7 @@ const process = require('process');
 const program = require('commander');
 
 program
-  .version('1.0.2')
+  .version('1.0.4')
   .option('-p, --port <port>', 'Port number (navigate to localhost:port to view the web page)')
   .option('-h, --host <host>', 'Zipkin host (default is http://localhost:9411)')
   .parse(process.argv);
