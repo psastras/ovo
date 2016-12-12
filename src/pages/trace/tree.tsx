@@ -22,6 +22,7 @@ interface TreeProps {
 interface TreeState {
   nodeMeta?: Map<string, NodeMeta>;
   width?: number;
+  timespan?: [ number, number ];
 }
 
 interface NodeMeta {
@@ -131,6 +132,7 @@ export class Tree extends React.Component<TreeProps, TreeState> {
         map.set(node.span.id, { details: false, expanded: level < 2 });
         return map;
       }, new Map<string, NodeMeta>()),
+      timespan: this.getTimespan(props.root),
       width: 95,
     };
   }
@@ -140,7 +142,8 @@ export class Tree extends React.Component<TreeProps, TreeState> {
       map.set(node.span.id, { details: false, expanded: level < 2 });
       return map;
     }, new Map<string, NodeMeta>());
-    this.setState({ nodeMeta });
+    const timespan = this.getTimespan(props.root);
+    this.setState({ nodeMeta, timespan });
   }
 
   public render(): JSX.Element {
@@ -172,6 +175,25 @@ export class Tree extends React.Component<TreeProps, TreeState> {
         </div>
       </div>
     );
+  }
+
+  private getTimespan(root: SpanNode): [number, number] {
+    let minTimestamp = Number.MAX_SAFE_INTEGER;
+    let maxTimestamp = 0;
+    [...root.entries()].forEach(([node, level]) => {
+      const startTime = Math.min(node.sr || Number.MAX_SAFE_INTEGER,
+        Math.min(node.span.timestamp, node.cr || Number.MAX_SAFE_INTEGER));
+      const endTime = Math.max(node.ss || 0,
+        Math.max(node.span.timestamp + (node.span.duration || 0), node.cs || 0));
+      if (startTime < minTimestamp) {
+        minTimestamp = startTime;
+      }
+      if (endTime > maxTimestamp) {
+        maxTimestamp = endTime;
+      }
+    });
+
+    return [ minTimestamp, maxTimestamp ];
   }
 
   private handleExpandAll = (): void => {
@@ -210,8 +232,8 @@ export class Tree extends React.Component<TreeProps, TreeState> {
   }
 
   private renderLabels(root: SpanNode): JSX.Element[] {
-    const { duration } = root.span;
-    const { width } = this.state;
+    const { width, timespan } = this.state;
+    const duration = timespan[1] - timespan[0];
 
     // number of markers to display (never with a smaller interval than 1)
     const numIntervals = Math.min(10, Math.floor(duration / 1000));
@@ -227,16 +249,15 @@ export class Tree extends React.Component<TreeProps, TreeState> {
   }
 
   private renderNode(node: SpanNode, root: SpanNode = node, level = 0): JSX.Element[] {
-    const { nodeMeta, width } = this.state;
+    const { nodeMeta, width, timespan } = this.state;
 
-    const { duration } = root.span;
-    const rootSr = root.sr || root.span.timestamp;
-    const rootSs = root.ss || root.span.timestamp + duration;
+    const duration = timespan[1] - timespan[0];
+    const nodeDuration = node.span.duration || 0;
 
     // the receiving service bar
     const nodeSr = node.sr || node.span.timestamp;
-    const nodeSs = node.ss || node.span.timestamp + node.span.duration;
-    const nodeOffset = (nodeSr - rootSr) / duration * width;
+    const nodeSs = node.ss || node.span.timestamp + nodeDuration;
+    const nodeOffset = (nodeSr - timespan[0]) / duration * width;
     const nodeWidth = (nodeSs - nodeSr) / duration * width;
 
     // if the client send / receive time is available in the annotations
@@ -245,7 +266,7 @@ export class Tree extends React.Component<TreeProps, TreeState> {
 
     let nodeClientOffset, nodeClientWidth;
     if (nodeCr && nodeCs) {
-      nodeClientOffset = (nodeCs - rootSr) / duration * width;
+      nodeClientOffset = (nodeCs - timespan[0]) / duration * width;
       nodeClientWidth = (nodeCr - nodeCs) / duration * width;
     }
 
@@ -274,7 +295,7 @@ export class Tree extends React.Component<TreeProps, TreeState> {
             }} />
             <div style={{ width: `${nodeWidth}%`, left: `${nodeOffset}%` }} />
             <div style={{ left: `${nodeOffset}%` }}>
-              {Math.round(node.span.duration / 1000)}ms: {node.span.name}
+              {Math.round(nodeDuration / 1000)}ms: {node.span.name}
             </div>
           </div>
           {this.props.display || meta.details ?

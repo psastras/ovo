@@ -142,7 +142,7 @@ export class SpanNode {
 
   private getServerReceive(): number {
     // attempt to use the sr annotation, if available
-    const sr = [...this.span.annotations, ...this.span.binaryAnnotations]
+    const sr = [...(this.span.annotations || []), ...(this.span.binaryAnnotations || [])]
       .find(annotation => annotation.value === 'sr' && !!annotation.timestamp);
     if (sr) {
       return sr.timestamp;
@@ -153,7 +153,7 @@ export class SpanNode {
 
   private getServerSend(): number {
     // attempt to use the ss annotation, if available
-    const ss = [...this.span.annotations, ...this.span.binaryAnnotations]
+    const ss = [...(this.span.annotations || []), ...(this.span.binaryAnnotations || [])]
       .find(annotation => annotation.value === 'ss' && !!annotation.timestamp);
     if (ss) {
       return ss.timestamp;
@@ -163,7 +163,7 @@ export class SpanNode {
 
   private getClientReceive() {
     // attempt to use the cr annotation, if available
-    const cr = [...this.span.annotations, ...this.span.binaryAnnotations]
+    const cr = [...(this.span.annotations || []), ...(this.span.binaryAnnotations || [])]
       .find(annotation => annotation.value === 'cr' && !!annotation.timestamp);
     if (cr) {
       return cr.timestamp;
@@ -173,7 +173,7 @@ export class SpanNode {
 
   private getClientSend() {
     // attempt to use the cs annotation, if available
-    const cs = [...this.span.annotations, ...this.span.binaryAnnotations]
+    const cs = [...(this.span.annotations || []), ...(this.span.binaryAnnotations || [])]
       .find(annotation => annotation.value === 'cs' && !!annotation.timestamp);
     if (cs) {
       return cs.timestamp;
