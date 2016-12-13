@@ -295,7 +295,7 @@ export class Tree extends React.Component<TreeProps, TreeState> {
             }} />
             <div style={{ width: `${nodeWidth}%`, left: `${nodeOffset}%` }} />
             <div style={{ left: `${nodeOffset}%` }}>
-              {Math.round(nodeDuration / 1000)}ms: {node.span.name}
+              {nodeDuration > 0 ? `${Math.round(nodeDuration / 1000)}ms: ` : ''}{node.span.name}
             </div>
           </div>
           {this.props.display || meta.details ?
