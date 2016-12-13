@@ -7,8 +7,10 @@ import { connect } from 'react-redux';
 
 interface NavbarProps {
   location?: any;
-  params?: any;
-  pushRoute?: any;
+  params?: {
+    traceId?: string;
+  };
+  pushRoute?: (route: string) => void;
 };
 
 export class Navbar extends React.Component<NavbarProps, {}> {
@@ -65,7 +67,7 @@ const mapStateToProps = (state: State, props: NavbarProps): NavbarProps => {
 
 const mapDispatchToProps = (dispatch): NavbarProps => {
   return {
-    pushRoute: (route) => dispatch(push(route)),
+    pushRoute: (route: string) => dispatch(push(route)),
   };
 };
 

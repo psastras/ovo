@@ -10,9 +10,9 @@ const CheckableTag = Tag.CheckableTag;
 interface SearchProps {
   zipkin?: ZipkinState;
   tree?: TreeState;
-  filterService?: any;
-  setAnnotationDetailsDisplay?: any;
-  resetServiceFilters?: any;
+  filterService?: (serviceName: string) => void;
+  setAnnotationDetailsDisplay?: (display: boolean) => void;
+  resetServiceFilters?: () => void;
 }
 
 export class Search extends React.Component<SearchProps, {}> {

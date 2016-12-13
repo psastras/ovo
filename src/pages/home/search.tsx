@@ -10,7 +10,8 @@ import * as moment from 'moment';
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 
-const selectBefore = (names: string[], onServiceChange: any, defaultValue: string) => {
+const selectBefore = (names: string[], onServiceChange: (serviceName: string) => void,
+  defaultValue: string) => {
   return (
     <Select ref='service'
       showSearch
@@ -26,10 +27,12 @@ const selectBefore = (names: string[], onServiceChange: any, defaultValue: strin
 };
 
 interface SearchProps {
-  getServiceNames?: any;
-  getSpans?: any;
-  getTraces?: any;
-  pushRoute?: any;
+  getServiceNames?: () => void;
+  getSpans?: (serviceName: string) => void;
+  getTraces?: (serviceName: string, start: number,
+      end: number, limit: number, minDuration: number,
+      spanName: string, annotationQuery: string) => void;
+  pushRoute?: (route: string | Object) => void;
   zipkin?: ZipkinState;
   location?: any;
 };
@@ -66,7 +69,7 @@ export class Search extends React.Component<SearchProps, SearchState> {
 
   public componentWillMount(): void {
     this.props.getServiceNames();
-    const { query } = this.props.location;
+    const query = this.props.location.query;
     const newState = {
       annotationQuery: query.annotationQuery || this.state.annotationQuery,
       duration: parseInt(query.duration || this.state.duration, 10),

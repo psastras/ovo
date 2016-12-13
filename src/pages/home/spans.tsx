@@ -20,7 +20,7 @@ interface TraceState {
 interface TracesProps {
   zipkin?: ZipkinState;
   location?: any;
-  pushRoute?: any;
+  pushRoute?: (route: string | Object) => void;
 }
 
 export class Trace extends React.Component<TraceProps, {}> {

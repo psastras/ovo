@@ -12,8 +12,10 @@ const TabPane = Tabs.TabPane;
 
 interface TraceProps {
   location?: any;
-  getTrace?: any;
-  params?: any;
+  getTrace?: (traceId: string) => void;
+  params?: {
+    traceId: string,
+  };
   zipkin?: ZipkinState;
 }
 
