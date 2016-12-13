@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import Search from '../components/search';
-import Spans from '../components/spans';
+import Search from './search';
+import Spans from './spans';
 
 interface HomeProps {
   location?: any;
