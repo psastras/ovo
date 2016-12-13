@@ -5,10 +5,12 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
-  entry: [
-    "babel-polyfill",
-    "./src/index.tsx",
-  ],
+  entry: {
+    index: ["babel-polyfill", "./src/index.tsx"],
+    vendor: ["react", "antd", "superagent", "redux", "lodash", "nprogress", "rc-animate", "moment",
+      "json-format", "react-addons-css-transition-group", "react-dom", "react-router",
+      "react-router-redux", "redux-actions", "redux-promise"],
+  },
 
   module: {
       loaders: [
@@ -28,6 +30,7 @@ module.exports = {
 
   plugins: [
     new ExtractTextPlugin("[name].css"),
+    new webpack.optimize.CommonsChunkPlugin({name: "vendor", filename: "vendor.bundle.js"}),
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: false,
     }),
