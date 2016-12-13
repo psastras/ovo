@@ -24,12 +24,14 @@ const app = express();
 
 // proxies api requests to zipkin
 app.use('/api/', (req, res) => {
-  const url = `${zipkinHost}${req.url}`;
+  const url = `${zipkinHost}/api${req.url}`;
   req.pipe(request[req.method.toLowerCase()]({ url, json: req.body })).pipe(res);
 });
 
-
 app.use(express.static(path.join(__dirname, 'dist')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist/index.html'));
+});
 
 app.listen(serverPort, () => {
   console.log(`Listening on port ${serverPort}`);
