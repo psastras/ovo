@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Tabs } from 'antd';
+import { Tabs, Icon } from 'antd';
 import * as jsonFormat from 'json-format';
 import * as Actions from 'src/flux/actions';
 import { State, ZipkinState } from 'src/flux/reducers';
@@ -34,10 +34,10 @@ export class Trace extends React.Component<TraceProps, {}> {
         <h1>{trace.getServiceName()} / {trace.span.traceId}</h1>
         <Search />
         <Tabs defaultActiveKey='1'>
-          <TabPane tab='Timeline' key='1'>
+          <TabPane tab={<span><Icon type='line-chart' /> Timeline</span>} key='1'>
             <Tree root={trace} />
           </TabPane>
-          <TabPane tab='JSON' key='2'>
+          <TabPane tab={<span><Icon type='file-text' /> JSON</span>} key='2'>
             <pre style={{ overflow: 'auto' }}>
               {jsonFormat(trace_json)}
             </pre>
