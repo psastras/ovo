@@ -31,6 +31,7 @@ argument for a list of supported options.
 To launch the server which will serve files out of `dist/`
 
 ```
+yarn build # build the dist/ files
 node index.js
 ```
 
@@ -41,6 +42,8 @@ Note that this expects Zipkin to be running on `http://localhost:9411`.
 To quickly launch a demo the provided Docker compose file will launch both Zipkin and the UI.
 
 ```
+yarn build # build the dist/ files
+yarn build:server # build the server
 docker-compose build
 docker-compose up
 ```
