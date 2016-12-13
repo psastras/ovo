@@ -207,7 +207,8 @@ export const parseSpans = (spans: Span[]): SpanNode => {
 
 export const getTrace = async (traceId: string): Promise<any> => {
   const response = await request.get(`${zipkinUrl}/api/v1/trace/${traceId}`);
-  return parseSpans(JSON.parse(response.text) as Span[]);
+  const json = JSON.parse(response.text);
+  return [ parseSpans(JSON.parse(response.text) as Span[]), json];
 };
 
 export const getServices = async (): Promise<string[]> => {

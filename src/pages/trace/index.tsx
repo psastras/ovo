@@ -1,10 +1,14 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { Tabs } from 'antd';
+import * as jsonFormat from 'json-format';
 import * as Actions from 'src/flux/actions';
 import { State, ZipkinState } from 'src/flux/reducers';
 import { SpanNode } from 'src/zipkin';
 import Search from './search';
 import Tree from './tree';
+
+const TabPane = Tabs.TabPane;
 
 interface TraceProps {
   location?: any;
@@ -24,12 +28,21 @@ export class Trace extends React.Component<TraceProps, {}> {
     if (!this.props.zipkin.trace) {
       return <div />;
     }
-    const { trace } = this.props.zipkin;
+    const { trace, trace_json } = this.props.zipkin;
     return (
       <div>
         <h1>{trace.getServiceName()} / {trace.span.traceId}</h1>
         <Search />
-        <Tree root={trace} />
+        <Tabs defaultActiveKey='1'>
+          <TabPane tab='Timeline' key='1'>
+            <Tree root={trace} />
+          </TabPane>
+          <TabPane tab='JSON' key='2'>
+            <pre style={{ overflow: 'auto' }}>
+              {jsonFormat(trace_json)}
+            </pre>
+          </TabPane>
+        </Tabs>
       </div>
     );
   }

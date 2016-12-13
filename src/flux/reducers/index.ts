@@ -7,6 +7,7 @@ export interface ZipkinState {
   spans: string[];
   traces: SpanNode[];
   trace: SpanNode;
+  trace_json: Object;
 }
 
 export interface TreeState {
@@ -57,7 +58,8 @@ export const zipkinReducer = handleActions({
       message.error(`Error fetching trace from Zipkin`);
     } else {
       return Object.assign({}, state, {
-        trace: action.payload,
+        trace: action.payload[0],
+        trace_json: action.payload[1],
       });
     }
   },
@@ -74,5 +76,6 @@ export const zipkinReducer = handleActions({
   services: [],
   spans: [],
   trace: undefined,
+  trace_json: undefined,
   traces: [],
 });

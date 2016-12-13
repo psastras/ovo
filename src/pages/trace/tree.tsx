@@ -39,7 +39,7 @@ interface AnnotationsProps {
 export class Annotations extends React.Component<AnnotationsProps, {}> {
 
   public render(): JSX.Element {
-    const { annotations, binaryAnnotations } = this.props;
+    const { annotations, binaryAnnotations, node } = this.props;
     return (
       <Animate transitionName='fade' transitionAppear transitionDisappear>
         <Tabs defaultActiveKey='1'>
@@ -104,7 +104,7 @@ export class Annotations extends React.Component<AnnotationsProps, {}> {
           </TabPane>
           <TabPane tab='JSON' key='2'>
             <pre style={{ maxHeight: '300px', overflow: 'auto' }}>
-              {jsonFormat(this.props.node)}
+              {jsonFormat(node.span)}
             </pre>
           </TabPane>
         </Tabs>
