@@ -15,7 +15,8 @@
       margin-right: auto;
       padding-right: 1em;
       border-right: 1px solid rgb(235, 235, 235);
-      min-width: 200px;
+      width: 250px;
+      text-overflow: ellipsis;
     }
     
     > div:last-child {
