@@ -14,7 +14,7 @@ An alternate [Zipkin](http://zipkin.io/) UI.
 The web server is available via the npm repository.
 
 ```
-npm -i g @psastras/ovo
+npm i -g @psastras/ovo
 ovo
 ```
 
