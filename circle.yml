@@ -23,3 +23,5 @@ test:
         environment:
           CI_TEST_REPORT_FILE: $CIRCLE_TEST_REPORTS/junit/test-results.xml
     - yarn integrationtest
+  post:
+    - yarn semantic-release || true

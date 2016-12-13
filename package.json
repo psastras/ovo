@@ -3,9 +3,13 @@
   "bin": {
     "ovo": "./index.js"
   },
-  "version": "1.0.7",
+  "version": "0.0.0-development",
   "description": "An alternate Zipkin UI",
-  "keywords": ["zipkin", "zipkinui", "zipkin-ui"],
+  "keywords": [
+    "zipkin",
+    "zipkinui",
+    "zipkin-ui"
+  ],
   "main": "src/index.tsx",
   "scripts": {
     "build": "webpack --config webpack.config.prod.js --progress",
@@ -26,7 +30,8 @@
     "watch": "npm-run-all --parallel watch:*",
     "watch:server": "webpack-dev-server",
     "watch:test": "webpack --config webpack.config.test.js --watch",
-    "watch:ava": "ava --watch"
+    "watch:ava": "ava --watch",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "ava": {
     "files": [
@@ -118,7 +123,8 @@
     "zipkin": "^0.5.0",
     "zipkin-context-cls": "^0.2.1",
     "zipkin-instrumentation-express": "^0.5.0",
-    "zipkin-transport-http": "^0.5.0"
+    "zipkin-transport-http": "^0.5.0",
+    "semantic-release": "^6.3.2"
   },
   "dependencies": {
     "commander": "^2.9.0",
@@ -127,7 +133,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/psastras/ovo.git"
+    "url": "https://github.com/psastras/ovo.git"
   },
   "author": "",
   "license": "MIT",
