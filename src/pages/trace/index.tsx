@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Tabs, Icon } from 'antd';
 import * as jsonFormat from 'json-format';
-import * as Actions from 'src/flux/actions';
+import Actions from 'src/flux/actions';
 import { State, ZipkinState } from 'src/flux/reducers';
 import { SpanNode } from 'src/zipkin';
 import Search from './search';
@@ -58,7 +58,7 @@ const mapStateToProps = (state: State, props: TraceProps): TraceProps => {
 
 const mapDispatchToProps = (dispatch): TraceProps => {
   return {
-    getTrace: (traceId: string) => dispatch(Actions.getTrace(traceId)),
+    getTrace: (traceId: string) => dispatch(Actions.zipkin.getTrace(traceId)),
   };
 };
 

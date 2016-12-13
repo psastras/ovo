@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { State, ZipkinState, TreeState } from 'src/flux/reducers';
 import { Tag, Row, Col, Checkbox } from 'antd';
-import * as Actions from 'src/flux/actions';
+import Actions from 'src/flux/actions';
 import './search.scss';
 
 const CheckableTag = Tag.CheckableTag;
@@ -77,10 +77,10 @@ const mapStateToProps = (state: State, props: SearchProps): SearchProps => {
 
 const mapDispatchToProps = (dispatch): SearchProps => {
   return {
-    filterService: (name: string) => dispatch(Actions.filterService(name)),
-    resetServiceFilters: () => dispatch(Actions.resetServiceFilters()),
+    filterService: (name: string) => dispatch(Actions.tree.filterService(name)),
+    resetServiceFilters: () => dispatch(Actions.tree.resetServiceFilters()),
     setAnnotationDetailsDisplay: (display: boolean) =>
-      dispatch(Actions.setDefaultAnnotationDetailsDisplay(display)),
+      dispatch(Actions.tree.setDefaultAnnotationDetailsDisplay(display)),
   };
 };
 

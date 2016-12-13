@@ -3,7 +3,7 @@ import { Card, Input, Select, Button, Row, Col, Form, DatePicker, InputNumber, I
 import { connect } from 'react-redux';
 import { State, ZipkinState } from 'src/flux/reducers';
 import { push } from 'react-router-redux';
-import * as Actions from 'src/flux/actions';
+import Actions from 'src/flux/actions';
 import './search.scss';
 import * as moment from 'moment';
 
@@ -224,12 +224,12 @@ const mapStateToProps = (state: State, props: SearchProps): SearchProps => {
 
 const mapDispatchToProps = (dispatch): SearchProps => {
   return {
-    getServiceNames: () => dispatch(Actions.getServiceNames()),
-    getSpans: (serviceName: string) => dispatch(Actions.getSpans(serviceName)),
+    getServiceNames: () => dispatch(Actions.zipkin.getServiceNames()),
+    getSpans: (serviceName: string) => dispatch(Actions.zipkin.getSpans(serviceName)),
     getTraces: (serviceName: string, start: number,
       end: number, limit: number, minDuration: number,
       spanName: string, annotationQuery: string) =>
-      dispatch(Actions.getTraces(serviceName, start, end, limit,
+      dispatch(Actions.zipkin.getTraces(serviceName, start, end, limit,
         minDuration, spanName, annotationQuery)),
     pushRoute: (route) => dispatch(push(route)),
   };
