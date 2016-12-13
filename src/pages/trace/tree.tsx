@@ -4,7 +4,7 @@ import * as jsonFormat from 'json-format';
 import { Timeline, Tabs, Alert, Icon, Button } from 'antd';
 import { connect } from 'react-redux';
 import { Annotation, BinaryAnnotation, SpanNode } from 'src/zipkin';
-import { State, TreeState as FluxTreeState } from 'src/flux/reducers';
+import { State } from 'src/flux/reducers';
 
 import './tree.scss';
 
