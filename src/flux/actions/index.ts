@@ -54,4 +54,4 @@ export const filterService = createAction('FILTER_SERVICE', (name: string) => {
 
 export const resetServiceFilters = createAction('RESET_SERVICE_FILTERS', () => {
   return;
-})
+});
