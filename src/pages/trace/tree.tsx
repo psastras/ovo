@@ -17,6 +17,7 @@ const TabPane = Tabs.TabPane;
 interface TreeProps {
   root?: SpanNode;
   display?: boolean;
+  filter?: Set<string>;
 }
 
 interface TreeState {
@@ -250,6 +251,7 @@ export class Tree extends React.Component<TreeProps, TreeState> {
 
   private renderNode(node: SpanNode, root: SpanNode = node, level = 0): JSX.Element[] {
     const { nodeMeta, width, timespan } = this.state;
+    const { display, filter } = this.props;
 
     const duration = timespan[1] - timespan[0];
     const nodeDuration = node.span.duration || 0;
@@ -271,8 +273,10 @@ export class Tree extends React.Component<TreeProps, TreeState> {
     }
 
     const meta = nodeMeta.get(node.span.id);
+    const isVisible = !filter.has(node.getServiceName());
 
     let ret = [
+      isVisible ?
       <div className='tree-row' key={node.span.id}>
         <div className='tree-service-name'
           style={{ paddingLeft: `${level * 5}px` }}
@@ -287,7 +291,7 @@ export class Tree extends React.Component<TreeProps, TreeState> {
         </div>
         <div style={{ flex: 1 }}>
           <div className='tree-chart'
-            style={this.props.display ? undefined : { cursor: 'pointer' }}
+            style={display ? undefined : { cursor: 'pointer' }}
             onClick={() => this.handleRowClick(`${node.span.id}`)}>
             <div style={{
               left: `${nodeClientOffset || nodeOffset}%`,
@@ -298,7 +302,7 @@ export class Tree extends React.Component<TreeProps, TreeState> {
               {nodeDuration > 0 ? `${Math.round(nodeDuration / 1000)}ms: ` : ''}{node.span.name}
             </div>
           </div>
-          {this.props.display || meta.details ?
+          {display || meta.details ?
             <div className='tree-details'>
               <Annotations
                 node={node}
@@ -308,7 +312,7 @@ export class Tree extends React.Component<TreeProps, TreeState> {
             undefined
           }
         </div>
-      </div>,
+      </div> : undefined,
     ];
 
     if (meta.expanded) {
@@ -322,6 +326,7 @@ export class Tree extends React.Component<TreeProps, TreeState> {
 const mapStateToProps = (state: State, props: TreeProps): TreeProps => {
   return {
     display: state.tree.display,
+    filter: state.tree.filter,
   };
 };
 

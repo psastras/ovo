@@ -5,18 +5,28 @@ import { Tag, Row, Col, Checkbox } from 'antd';
 import * as Actions from 'src/flux/actions';
 import './search.scss';
 
+const CheckableTag = Tag.CheckableTag;
+
 interface SearchProps {
   zipkin?: ZipkinState;
   tree?: TreeState;
+  filterService?: any;
   setAnnotationDetailsDisplay?: any;
+  resetServiceFilters?: any;
 }
 
 export class Search extends React.Component<SearchProps, {}> {
+
+  public componentWillMount(): void {
+    this.props.resetServiceFilters();
+  }
+
   public render(): JSX.Element {
     if (!this.props.zipkin || !this.props.zipkin.trace) {
       return undefined;
     }
     const { trace } = this.props.zipkin;
+    const { filter } = this.props.tree;
     const stats = trace.getSeviceSpanStats();
     return (
       <div className='search-box'>
@@ -37,16 +47,24 @@ export class Search extends React.Component<SearchProps, {}> {
         <Row>
           <Col span={24}>
             {[...stats.entries()].map(([name, stat]) =>
-              <Tag
+              <CheckableTag
                 key={name}
+                checked={!filter.has(name)}
+                onChange={(checked: boolean) => this.handleServiceTagCheck(checked, name)}
                 >
                 {name} x {stat.count}
-              </Tag>,
+              </CheckableTag>,
             )}
           </Col>
         </Row>
       </div>
     );
+  }
+
+  private handleServiceTagCheck(checked: boolean, name: string): void {
+    if (checked === this.props.tree.filter.has(name)) {
+      this.props.filterService(name);
+    }
   }
 }
 
@@ -59,6 +77,8 @@ const mapStateToProps = (state: State, props: SearchProps): SearchProps => {
 
 const mapDispatchToProps = (dispatch): SearchProps => {
   return {
+    filterService: (name: string) => dispatch(Actions.filterService(name)),
+    resetServiceFilters: () => dispatch(Actions.resetServiceFilters()),
     setAnnotationDetailsDisplay: (display: boolean) =>
       dispatch(Actions.setDefaultAnnotationDetailsDisplay(display)),
   };
