@@ -75,7 +75,7 @@ export class SpanNode {
         if (nodeQueue.length === 0) {
           return { done: true, value: undefined };
         }
-        const [node, level] = nodeQueue.pop();
+        const [node, level] = nodeQueue.shift();
         for (let child of node.children) {
           nodeQueue.push([ child, level + 1 ]);
         }
