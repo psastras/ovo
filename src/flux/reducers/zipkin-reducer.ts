@@ -2,6 +2,8 @@ import { handleActions, ActionMeta } from 'redux-actions';
 import { message } from 'antd';
 import { SpanNode } from 'src/zipkin';
 
+const defaultErrorDurationS = 3;
+
 export interface ZipkinState {
   services: string[];
   spans: string[];
@@ -10,10 +12,21 @@ export interface ZipkinState {
   trace_json: Object;
 }
 
+const tryExtractErrorMessage = (action: ActionMeta<any, any>): string {
+  try {
+    const response = JSON.parse(action.payload.response.text);
+    return response.message;
+  } catch (e: Error) {
+    // no-op
+  }
+};
+
 export default handleActions({
   GET_SERVICE_NAMES: (state: ZipkinState, action: ActionMeta<any, {}>) => {
     if (action.error) {
-      message.error(`Error fetching service names from Zipkin`);
+      const errorMessage = tryExtractErrorMessage(action);
+      message.error(`Error fetching service names from Zipkin: ${errorMessage}`,
+        defaultErrorDurationS);
     } else {
       return Object.assign({}, state, {
         services: action.payload,
@@ -23,7 +36,8 @@ export default handleActions({
   },
   GET_SPANS: (state: ZipkinState, action: ActionMeta<any, {}>) => {
     if (action.error) {
-      message.error(`Error fetching spans from Zipkin`);
+      const errorMessage = tryExtractErrorMessage(action);
+      message.error(`Error fetching spans from Zipkin: ${errorMessage}`, defaultErrorDurationS);
     } else {
       return Object.assign({}, state, {
         spans: action.payload,
@@ -32,7 +46,8 @@ export default handleActions({
   },
   GET_TRACE: (state: ZipkinState, action: ActionMeta<any, {}>) => {
     if (action.error) {
-      message.error(`Error fetching trace from Zipkin`);
+      const errorMessage = tryExtractErrorMessage(action);
+      message.error(`Error fetching trace from Zipkin: ${errorMessage}`, defaultErrorDurationS);
     } else {
       return Object.assign({}, state, {
         trace: action.payload[0],
@@ -42,7 +57,8 @@ export default handleActions({
   },
   GET_TRACES: (state: ZipkinState, action: ActionMeta<any, {}>) => {
     if (action.error) {
-      message.error(`Error fetching traces from Zipkin`);
+      const errorMessage = tryExtractErrorMessage(action);
+      message.error(`Error fetching traces from Zipkin: ${errorMessage}`, defaultErrorDurationS);
     } else {
       return Object.assign({}, state, {
         traces: action.payload,
