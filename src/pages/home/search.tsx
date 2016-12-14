@@ -182,7 +182,7 @@ export class Search extends React.Component<SearchProps, SearchState> {
           </Col>
         </Row>
         <Row gutter={10}>
-          <Col span={3}>
+          <Col span={6}>
             <Select
               showSearch
               placeholder='Select a method'
@@ -209,7 +209,7 @@ export class Search extends React.Component<SearchProps, SearchState> {
               value={this.state.spans}
               onChange={this.onSpanChange} />
           </Col>
-          <Col span={15} style={{ textAlign: 'right' }}>
+          <Col span={12} style={{ textAlign: 'right' }}>
             <Button type='primary' htmlType='submit'><Icon type='search' /> Find Traces</Button>
           </Col>
         </Row>
