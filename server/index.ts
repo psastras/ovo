@@ -39,10 +39,14 @@ app.use(unless('\/api.*', zipkinMiddleware({
 
 // proxies api requests to zipkin
 app.use('/api/', (req, res) => {
-  const url = `http://zipkin:9411${req.url}`;
+  const url = `http://zipkin:9411/api${req.url}`;
   req.pipe(request[req.method.toLowerCase()]({ url, json: req.body })).pipe(res);
 });
 
 app.use(express.static('dist'));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist/index.html'));
+});
 
 app.listen(8080);
