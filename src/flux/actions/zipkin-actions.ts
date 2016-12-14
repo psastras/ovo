@@ -39,3 +39,10 @@ export const getSpans = createAction('GET_SPANS', async (serviceName: string) =>
     NProgress.done();
   }
 });
+
+export default {
+  getServiceNames,
+  getSpans,
+  getTraces,
+  getTrace,
+};
