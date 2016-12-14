@@ -13,7 +13,8 @@ module.exports = {
       { test: /\.tsx?$/, loaders: ["istanbul-instrumenter-loader?esModules=true", "ts-loader"] },
       { test: /\.scss$/, loader: "css-loader!sass-loader" },
       { test: /\.css$/, loader: "css-loader" },
-      { test: /\.(jpe?g|png|gif|svg|eot|woff|svg|ttf|json)/, loader: "file-loader" },
+      { test: /\.json$/, loader: "json-loader" },
+      { test: /\.(jpe?g|png|gif|svg|eot|woff|svg|ttf)/, loader: "file-loader" },
     ],
   },
   output: {

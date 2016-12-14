@@ -1,4 +1,7 @@
 import test from 'ava';
+import { parseSpans } from 'src/zipkin';
+// tslint:disable-next-line:no-var-requires
+const spanRpc = require('./span-rpc.json');
 // tslint:disable-next-line:no-var-requires
 const ZikpinInjector = require('inject-loader!../../src/zipkin');
 
@@ -50,4 +53,15 @@ test('should return a list of traces as a span node', async t => {
 
   const trace = await Zipkin.getTraces();
   t.deepEqual(trace[0].span, payload[0][0]);
+});
+
+test('should be able to parse span-rpc.json', (t) => {
+  const spans = parseSpans(spanRpc);
+
+  t.deepEqual([...spans.entries()].length, 5);
+  t.deepEqual(spans.getServiceName(), 'zipkin-query');
+  t.deepEqual(spans.children.length, 1);
+  t.deepEqual(spans.sr, 1458702548467000);
+  t.deepEqual(spans.ss, 1458702548853000);
+  t.deepEqual(spans.getSeviceSpanStats().get(spans.getServiceName()).duration, spans.ss - spans.sr);
 });
