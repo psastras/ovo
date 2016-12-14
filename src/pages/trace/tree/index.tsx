@@ -26,6 +26,9 @@ interface NodeMeta {
 
 export class Tree extends React.Component<TreeProps, TreeState> {
 
+  // the minimum timeline bar chart width (this is a percentage of the total width)
+  private readonly minTimelineWidth = 0.01;
+
   constructor(props: TreeProps) {
     super();
     this.state = {
@@ -160,7 +163,7 @@ export class Tree extends React.Component<TreeProps, TreeState> {
     const nodeSr = node.sr || node.span.timestamp;
     const nodeSs = node.ss || node.span.timestamp + nodeDuration;
     const nodeOffset = (nodeSr - timespan[0]) / duration * width;
-    const nodeWidth = (nodeSs - nodeSr) / duration * width;
+    const nodeWidth = Math.max(this.minTimelineWidth, (nodeSs - nodeSr) / duration) * width;
 
     // if the client send / receive time is available in the annotations
     const nodeCr = node.cr;
