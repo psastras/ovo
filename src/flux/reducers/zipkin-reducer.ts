@@ -12,11 +12,11 @@ export interface ZipkinState {
   trace_json: Object;
 }
 
-const tryExtractErrorMessage = (action: ActionMeta<any, any>): string {
+const tryExtractErrorMessage = (action: ActionMeta<any, any>): string => {
   try {
     const response = JSON.parse(action.payload.response.text);
     return response.message;
-  } catch (e: Error) {
+  } catch (e) {
     // no-op
   }
 };
