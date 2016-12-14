@@ -7,6 +7,8 @@ import { push } from 'react-router-redux';
 import { Link } from 'react-router';
 import * as moment from 'moment';
 
+import './spans.scss';
+
 const Option = Select.Option;
 
 interface TraceProps {
@@ -30,9 +32,16 @@ export class Trace extends React.Component<TraceProps, {}> {
     const serviceName = trace.getServiceName();
     return (
       <Link to={`/trace/${trace.span.traceId}`} style={{ color: 'black' }}>
-        <Card title={`${serviceName} / ${trace.span.traceId}`}
-          extra={`${moment(trace.span.timestamp / 1000).fromNow()} / \
-           ${((trace.span.duration || 0) / 1000).toFixed(2)} ms`}
+        <Card title={
+          <span>
+            <span className='card-span-title'>{serviceName}</span>
+            <span className='card-span-name'>{trace.span.name}</span>
+          </span>}
+          extra={
+           <span style={{ color: '#0f87dd' }}>
+            {moment(trace.span.timestamp / 1000).fromNow()} / {trace.span.traceId} /&nbsp;
+            {((trace.span.duration || 0) / 1000).toFixed(2)} ms
+           </span>}
           bordered={false}>
           {[...serviceSpanStats.entries()].map((entry, i) => {
             const [name, { count, duration }] = entry;
