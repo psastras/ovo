@@ -1,13 +1,20 @@
 .card-span-name {
   font-family: monospace;
   font-size: 0.9em;
-  padding: 0.1em 0.2em;
+  padding: 0.2em 0.4em;
   background: rgb(235, 235, 235);
   border: 1px solid darken(rgb(235, 235, 235), 10);
   border-radius: 3px;
   margin: 0 1em;
+  color: rgb(15, 15, 15);
 }
 
 .card-span-title {
   font-size: 1.3em;
+  font-weight: 400;
+  color: '#0f87dd';
+}
+
+.card-span-subtitle {
+  color: rgb(15, 15, 15);
 }

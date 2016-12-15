@@ -31,14 +31,14 @@ export class Trace extends React.Component<TraceProps, {}> {
     const serviceSpanStats = trace.getSeviceSpanStats();
     const serviceName = trace.getServiceName();
     return (
-      <Link to={`/trace/${trace.span.traceId}`} style={{ color: 'black' }}>
+      <Link to={`/trace/${trace.span.traceId}`}>
         <Card title={
           <span>
             <span className='card-span-title'>{serviceName}</span>
             <span className='card-span-name'>{trace.span.name}</span>
           </span>}
           extra={
-           <span style={{ color: '#0f87dd' }}>
+           <span className='card-span-subtitle'>
             {moment(trace.span.timestamp / 1000).fromNow()} / {trace.span.traceId} /&nbsp;
             {((trace.span.duration || 0) / 1000).toFixed(2)} ms
            </span>}
@@ -47,7 +47,7 @@ export class Trace extends React.Component<TraceProps, {}> {
             const [name, { count, duration }] = entry;
             const text = `${name} x ${count} ${(duration / 1000).toFixed(2)} ms`;
             return (
-              <Tag key={i} color={name === serviceName ? '#108ee9' : undefined}>
+              <Tag key={i}>
                 {text}
               </Tag>
             );
