@@ -34,6 +34,12 @@ export class Navbar extends React.Component<NavbarProps, {}> {
               Explore Tracing Data
             </Link>
           </Menu.Item>
+          {process.env.NODE_ENV === 'development' ?
+          <Menu.Item key='/dependencies'>
+            <Link to='/dependencies'>
+              Dependencies
+            </Link>
+          </Menu.Item> : undefined}
           <Menu.Item key={`/trace/${this.props.params.traceId}`}>
             <Form onSubmit={this.handleSubmitTrace}>
               View Trace
