@@ -7,8 +7,6 @@ import { push } from 'react-router-redux';
 import { Link } from 'react-router';
 import * as moment from 'moment';
 
-import './spans.scss';
-
 const Option = Select.Option;
 
 interface TraceProps {

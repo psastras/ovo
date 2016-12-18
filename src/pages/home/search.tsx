@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { State, ZipkinState } from 'src/flux/reducers';
 import { push } from 'react-router-redux';
 import Actions from 'src/flux/actions';
-import './search.scss';
 import * as moment from 'moment';
 
 const Option = Select.Option;

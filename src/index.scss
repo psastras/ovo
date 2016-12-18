@@ -12,3 +12,11 @@ h1, h2, h3 {
   font-weight: 300;
   letter-spacing: 0.05em;
 }
+
+// home page
+@import './pages/home/search.scss';
+@import './pages/home/spans.scss';
+
+// trace page
+@import './pages/trace/search.scss';
+@import './pages/trace/tree/index.scss';

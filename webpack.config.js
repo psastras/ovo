@@ -54,6 +54,7 @@ module.exports = {
   },
 
   output: {
+    chunkFilename: "[name]-[chunkhash].js",
     filename: "bundle.js",
     publicPath: "http://127.0.0.1:8080/",
   },

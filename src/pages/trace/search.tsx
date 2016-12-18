@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { State, TreeState, ZipkinState } from 'src/flux/reducers';
 import { Tag, Row, Col, Checkbox } from 'antd';
 import Actions from 'src/flux/actions';
-import './search.scss';
 
 const CheckableTag = Tag.CheckableTag;
 

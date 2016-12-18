@@ -5,8 +5,6 @@ import { SpanNode } from 'src/zipkin';
 import { State } from 'src/flux/reducers';
 import Annotations from './annotations';
 
-import './index.scss';
-
 interface TreeProps {
   root?: SpanNode;
   display?: boolean;
