@@ -33,6 +33,12 @@ export interface Span {
   binaryAnnotations: any[];
 }
 
+export interface DependencyLink {
+  callCount: number;
+  child: string;
+  parent: string;
+}
+
 export class SpanStats {
   public count: number = 0;
   public duration: number = 0;
@@ -238,4 +244,10 @@ export const getTraces = async (serviceName: string, start: number,
   return (JSON.parse(response.text) as Span[][])
     .map(spans => parseSpans(spans))
     .filter(node => !!node);
+};
+
+export const getDependencies = async (endTs: number): Promise<DependencyLink[]> => {
+  const response = await request.get(`${zipkinUrl}/api/v1/dependencies`)
+    .query({ endTs });
+  return JSON.parse(response.text) as DependencyLink[];
 };

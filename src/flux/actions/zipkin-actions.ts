@@ -40,9 +40,19 @@ export const getSpans = createAction('GET_SPANS', async (serviceName: string) =>
   }
 });
 
+export const getDependencies = createAction('GET_DEPENDENCIES', async (endTs: number) => {
+  try {
+    NProgress.start();
+    return await Zipkin.getDependencies(endTs);
+  } finally {
+    NProgress.done();
+  }
+});
+
 export default {
   getServiceNames,
   getSpans,
   getTraces,
   getTrace,
+  getDependencies,
 };

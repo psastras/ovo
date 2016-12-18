@@ -38,3 +38,11 @@ test('should handle the get traces action', (t) => {
     reducer(initialState, { type: 'GET_TRACES', payload: tracesPayload });
   t.deepEqual(mutatedState.traces, tracesPayload);
 });
+
+test('should handle the get dependencies action', (t) => {
+  const dependenciesPayload = [{parent: 'frontend', child: 'backend', callCount: 17}];
+  const initialState = {};
+  const mutatedState =
+    reducer(initialState, { type: 'GET_DEPENDENCIES', payload: dependenciesPayload });
+  t.deepEqual(mutatedState.dependencies, dependenciesPayload);
+});

@@ -1,10 +1,11 @@
 import { handleActions, ActionMeta } from 'redux-actions';
 import { message } from 'antd';
-import { SpanNode } from 'src/zipkin';
+import { SpanNode, DependencyLink } from 'src/zipkin';
 
 const defaultErrorDurationS = 3;
 
 export interface ZipkinState {
+  dependencies: DependencyLink[];
   services: string[];
   spans: string[];
   traces: SpanNode[];
@@ -22,6 +23,17 @@ const tryExtractErrorMessage = (action: ActionMeta<any, any>): string => {
 };
 
 export default handleActions({
+  GET_DEPENDENCIES: (state: ZipkinState, action: ActionMeta<any, {}>) => {
+    if (action.error) {
+      const errorMessage = tryExtractErrorMessage(action);
+      message.error(`Error fetching dependencies from Zipkin: ${errorMessage}`,
+        defaultErrorDurationS);
+    } else {
+      return Object.assign({}, state, {
+        dependencies: action.payload,
+      });
+    }
+  },
   GET_SERVICE_NAMES: (state: ZipkinState, action: ActionMeta<any, {}>) => {
     if (action.error) {
       const errorMessage = tryExtractErrorMessage(action);
@@ -66,6 +78,7 @@ export default handleActions({
     }
   },
 }, {
+  dependencies: [],
   services: [],
   spans: [],
   trace: undefined,

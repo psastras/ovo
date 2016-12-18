@@ -56,3 +56,17 @@ test('constructs a valid action to get spans', async t => {
   const payload = await action.payload;
   t.deepEqual(payload, spans);
 });
+
+test('constructs a valid action to get dependencies', async (t) => {
+  const dependencies = [{parent: 'frontend', child: 'backend', callCount: 17}];
+  const ZipkinActions = ZipkinActionsInjector({
+    'src/zipkin': {
+      getDependencies: () => { return dependencies; },
+    },
+  });
+
+  const action = ZipkinActions.getDependencies();
+  t.deepEqual(action.type, 'GET_DEPENDENCIES');
+  const payload = await action.payload;
+  t.deepEqual(payload, dependencies);
+});

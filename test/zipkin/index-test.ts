@@ -65,3 +65,16 @@ test('should be able to parse span-rpc.json', (t) => {
   t.deepEqual(spans.ss, 1458702548853000);
   t.deepEqual(spans.getSeviceSpanStats().get(spans.getServiceName()).duration, spans.ss - spans.sr);
 });
+
+test('should return a list of dependency links', async (t) => {
+  const payload = [{parent: 'frontend', child: 'backend', callCount: 17}];
+  const Zipkin = ZikpinInjector({
+    superagent: {
+      get: (path: string) =>
+        { return { query: () => { return { text: JSON.stringify(payload) }; } }; },
+    },
+  });
+
+  const dependencies = await Zipkin.getDependencies();
+  t.deepEqual(dependencies, payload);
+});
