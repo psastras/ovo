@@ -34,9 +34,10 @@ module.exports = {
   },
 
   plugins: [
-    new CopyWebpackPlugin([{
-      from: "src/assets/fonts/antd-icons.woff", to: "assets/fonts/antd-icons.woff",
-    }]),
+    new CopyWebpackPlugin([
+      { from: "src/assets/fonts/antd-icons.woff", to: "assets/fonts/antd-icons.woff" },
+      { from: "src/assets/favicon.png", to: "assets/favicon.png" },
+    ]),
     new ExtractTextPlugin("[name].css"),
     new webpack.optimize.CommonsChunkPlugin({name: "vendor", filename: "vendor.bundle.js"}),
     new webpack.optimize.UglifyJsPlugin({

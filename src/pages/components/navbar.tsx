@@ -29,7 +29,10 @@ export class Navbar extends React.Component<NavbarProps, {}> {
           className='navbar'
           >
           <Menu.Item key='/'>
-            <Link to='/'>Explore Tracing Data</Link>
+            <Link to='/' style={{ display: 'flex', alignItems: 'center' }}>
+              <img src='/assets/favicon.png' height={24} style={{ marginRight: '1em' }} />
+              Explore Tracing Data
+            </Link>
           </Menu.Item>
           <Menu.Item key={`/trace/${this.props.params.traceId}`}>
             <Form onSubmit={this.handleSubmitTrace}>
