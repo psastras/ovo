@@ -3,6 +3,7 @@ const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const extractCSS = new ExtractTextPlugin('stylesheets/[name].css');
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   devServer: {
@@ -31,13 +32,25 @@ module.exports = {
   },
 
   module: {
-      loaders: [
-        // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
-        { test: /\.tsx?$/, loaders: ["react-hot-loader/webpack", "ts-loader"] },
-        { test: /\.scss$/, loader: extractCSS.extract([ "css-loader", "sass-loader"]) },
-        { test: /\.css$/, loader: extractCSS.extract(["css-loader"]) },
-        { test: /\.(jpe?g|png|gif|svg|eot|woff|svg|ttf|json)/, loader: "file-loader" },
-      ],
+    loaders: [
+      // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
+      {
+        test: /\.tsx?$/,
+        loaders: ["react-hot-loader/webpack", "ts-loader"]
+      }, {
+        test: /\.less$/,
+        loader: extractCSS.extract(["css-loader", "less-loader"])
+      }, {
+        test: /\.scss$/,
+        loader: extractCSS.extract(["css-loader", "sass-loader"])
+      }, {
+        test: /\.css$/,
+        loader: extractCSS.extract(["css-loader"])
+      }, {
+        test: /\.(jpe?g|png|gif|svg|eot|woff|svg|ttf|json)/,
+        loader: "file-loader"
+      },
+    ],
   },
 
   output: {
@@ -46,6 +59,9 @@ module.exports = {
   },
 
   plugins: [
+    new CopyWebpackPlugin([{
+      from: "src/assets/fonts/antd-icons.woff", to: "assets/fonts/antd-icons.woff",
+    }]),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("development"),
@@ -54,10 +70,9 @@ module.exports = {
   ],
 
   resolve: {
-      alias: {
-        src: path.join(__dirname, "/src"),
-      },
-      // Add '.ts' and '.tsx' as resolvable extensions.
-      extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
+    alias: {
+      src: path.join(__dirname, "/src"),
+    },
+    extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".less"],
   },
 };

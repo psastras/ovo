@@ -9,6 +9,7 @@ import Home from './pages/home';
 import Trace from './pages/trace';
 import store from './flux';
 import './index.scss';
+import './index.less';
 
 // tslint:disable-next-line
 const Animate = require('rc-animate');

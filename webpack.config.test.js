@@ -12,6 +12,7 @@ module.exports = {
     loaders: [
       { test: /\.tsx?$/, loaders: ["istanbul-instrumenter-loader?esModules=true", "ts-loader"] },
       { test: /\.scss$/, loader: "css-loader!sass-loader" },
+      { test: /\.scss$/, loader: "css-loader!less-loader" },
       { test: /\.css$/, loader: "css-loader" },
       { test: /\.json$/, loader: "json-loader" },
       { test: /\.(jpe?g|png|gif|svg|eot|woff|svg|ttf)/, loader: "file-loader" },
@@ -33,7 +34,7 @@ module.exports = {
     alias: {
       src: path.join(__dirname, "/src"),
     },
-    extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
+    extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".less"],
   },
   target: "node", // in order to ignore built-in modules like path, fs, etc.
 };

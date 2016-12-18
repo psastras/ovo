@@ -3,6 +3,7 @@ const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   entry: {
@@ -16,6 +17,8 @@ module.exports = {
       loaders: [
         // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
         { test: /\.tsx?$/, loaders: ["babel-loader?presets[]=es2015&presets[]=stage-0", "ts-loader"] },
+        { test: /\.less$/, loader: ExtractTextPlugin.extract({ fallbackLoader: "style-loader",
+          loader: "css-loader!less-loader"})},
         { test: /\.scss$/, loader: ExtractTextPlugin.extract({ fallbackLoader: "style-loader",
           loader: "css-loader!sass-loader"})},
         { test: /\.css$/, loader: ExtractTextPlugin.extract({fallbackLoader: "style-loader", loader: "css"}) },
@@ -30,6 +33,9 @@ module.exports = {
   },
 
   plugins: [
+    new CopyWebpackPlugin([{
+      from: "src/assets/fonts/antd-icons.woff", to: "assets/fonts/antd-icons.woff",
+    }]),
     new ExtractTextPlugin("[name].css"),
     new webpack.optimize.CommonsChunkPlugin({name: "vendor", filename: "vendor.bundle.js"}),
     new webpack.optimize.UglifyJsPlugin({
@@ -49,7 +55,6 @@ module.exports = {
       alias: {
         src: path.join(__dirname, "/src"),
       },
-      // Add '.ts' and '.tsx' as resolvable extensions.
-      extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
+      extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".less"],
   },
 };

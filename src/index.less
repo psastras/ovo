@@ -1,0 +1,30 @@
+// This file is only used to configure vendor less styles (not compatible with sass)
+// Normal application styling should be done in sass (see index.scss)
+
+// antd overrides
+// see: https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less
+
+@import "../node_modules/antd/dist/antd.less";
+
+// Color
+@primary-color          : #4A10E9;
+@success-color          : #87d068;
+@error-color            : #f50;
+@highlight-color        : #f50;
+@warning-color          : #fa0;
+@normal-color           : #d9d9d9;
+
+// ------ Base & Require ------
+@font-family            : -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+// ICONFONT
+@icon-url               : "/assets/fonts/antd-icons";
+
+// LINK
+@link-color             : #4A10E9;
+@link-hover-color       : tint(@link-color, 20%);
+@link-active-color      : shade(@link-color, 5%);
+@link-hover-decoration  : none;
+
+// Background color
+@background-color-base  : #f7f7f7;        // basic gray background
