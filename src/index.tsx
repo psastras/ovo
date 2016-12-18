@@ -48,7 +48,8 @@ ReactDOM.render(
         <Router history={history}>
           <Route path='/trace/:traceId'
             getComponent={() => System.import('./pages/trace').then(c => layout(c.default))} />
-          <Route path='/' getComponent={() => System.import('./pages/home').then(c => layout(c.default))} />
+          <Route path='/'
+            getComponent={() => System.import('./pages/home').then(c => layout(c.default))} />
         </Router>
       </div>
     </LocaleProvider>
