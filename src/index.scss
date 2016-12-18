@@ -1,4 +1,20 @@
+// adjust nprogress style
+
+#nprogress .bar {
+  background: #4A10E9;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #4A10E9, 0 0 5px #4A10E9;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: #4A10E9;
+  border-left-color: #4A10E9;
+}
+
 @import '../node_modules/nprogress/nprogress.css';
+
 
 html {
   min-height: 100%;
