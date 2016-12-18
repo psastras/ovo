@@ -202,7 +202,8 @@ export class Tree extends React.Component<TreeProps, TreeState> {
             }} />
             <div style={{ width: `${nodeWidth}%`, left: `${nodeOffset}%` }} />
             <div style={{ left: `${nodeOffset}%` }}>
-              {nodeDuration > 0 ? `${Math.round(nodeDuration / 1000)}ms: ` : ''}{node.span.name}
+              {nodeDuration > 0 ? `${Math.round(nodeDuration / 1000)}ms: ` : ''}
+              {node.span.name} / {node.span.id}
             </div>
           </div>
           {display || meta.details ?
