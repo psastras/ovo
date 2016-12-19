@@ -109,9 +109,6 @@ export class Search extends React.Component<SearchProps, SearchState> {
       start: this.state.start,
     };
     this.setState(newState);
-    this.props.getTraces(newState.service, newState.start,
-      newState.end, newState.spans,
-      newState.duration, newState.method, newState.annotationQuery);
     this.props.pushRoute({
       query: Object.assign({}, this.props.location.query || {}, newState),
     });
