@@ -42,9 +42,9 @@ export default class Annotations extends React.Component<AnnotationsProps, {}> {
                             {annotation.endpoint.port ? `:${annotation.endpoint.port}` : undefined}
                             <span> ({annotation.endpoint.serviceName || 'Unknown'})</span>
                           </p> :
-                          <pre>
-                            {jsonFormat(annotation)}
-                          </pre>
+                          <p>
+                            Unknown
+                          </p>
                         }
                       </Time>)
                   }
