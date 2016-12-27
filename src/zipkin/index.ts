@@ -2,7 +2,7 @@ import * as _request from 'superagent';
 import * as moment from 'moment';
 const request = _request;
 
-const zipkinUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:9411' : '';
+const zipkinUrl = process.env.NODE_ENV === 'development' ? 'http://zipkin.service.classicdev-useast1.consul' : '';
 
 export interface Endpoint {
   serviceName: string;

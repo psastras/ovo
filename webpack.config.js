@@ -13,7 +13,7 @@ module.exports = {
   devtool: "source-map",
   entry: [
     "./src/index.tsx",
-    "webpack-dev-server/client?http://127.0.0.1:8080",
+    "webpack-dev-server/client?http://127.0.0.1:80",
     "webpack/hot/only-dev-server",
   ],
 
@@ -56,7 +56,7 @@ module.exports = {
   output: {
     chunkFilename: "[name]-[chunkhash].js",
     filename: "bundle.js",
-    publicPath: "http://127.0.0.1:8080/",
+    publicPath: "http://127.0.0.1:80/",
   },
 
   plugins: [

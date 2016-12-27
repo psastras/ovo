@@ -35,11 +35,17 @@ export default class Annotations extends React.Component<AnnotationsProps, {}> {
                           {moment(annotation.timestamp / 1000).format('YYYY-MM-DD HH:mm:ss.SSSS')}
                         </p>
                         <p>{this.getAnnotationValue(annotation)}</p>
-                        <p>
-                          {annotation.endpoint.ipv4}
-                          {annotation.endpoint.port ? `:${annotation.endpoint.port}` : undefined}
-                          <span> ({annotation.endpoint.serviceName})</span>
-                        </p>
+                        {
+                          annotation.endpoint ?
+                          <p>
+                            {annotation.endpoint.ipv4}
+                            {annotation.endpoint.port ? `:${annotation.endpoint.port}` : undefined}
+                            <span> ({annotation.endpoint.serviceName || 'Unknown'})</span>
+                          </p> :
+                          <pre>
+                            {jsonFormat(annotation)}
+                          </pre>
+                        }
                       </Time>)
                   }
                 </Timeline>
@@ -47,6 +53,9 @@ export default class Annotations extends React.Component<AnnotationsProps, {}> {
               <div>
                 {binaryAnnotations && binaryAnnotations.length > 0 ? [...binaryAnnotations
                   .reduce((map, a) => {
+                    if (!a.endpoint || !a.endpoint.serviceName) {
+                      return map;
+                    }
                     if (!map.has(a.endpoint.serviceName)) {
                       map.set(a.endpoint.serviceName, []);
                     }
