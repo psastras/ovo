@@ -227,9 +227,9 @@ const mapDispatchToProps = (dispatch): SearchProps => {
     getSpans: (serviceName: string) => dispatch(Actions.zipkin.getSpans(serviceName)),
     getTraces: (serviceName: string, start: number,
       end: number, limit: number, minDuration: number,
-      spanName: string, annotationQuery: string) =>
-      dispatch(Actions.zipkin.getTraces(serviceName, start, end, limit,
-        minDuration, spanName, annotationQuery)),
+      spanName: string, queryAnnotation: string) =>
+      dispatch(Actions.zipkin.getTraces({serviceName, start, end, limit,
+        minDuration, spanName, queryAnnotation})),
     pushRoute: (route) => dispatch(push(route)),
   };
 };

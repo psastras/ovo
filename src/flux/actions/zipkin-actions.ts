@@ -11,12 +11,21 @@ export const getServiceNames = createAction('GET_SERVICE_NAMES', async () => {
   }
 });
 
-export const getTraces = createAction('GET_TRACES', async (serviceName: string, start: number,
-  end: number, limit: number, minDuration: number, spanName: string, queryAnnotation: string) => {
+export interface TraceQuery {
+  serviceName: string;
+  start: number;
+  end: number;
+  minDuration: number;
+  spanName: string;
+  queryAnnotation: string;
+  limit: number;
+}
+
+export const getTraces = createAction('GET_TRACES', async (query: TraceQuery) => {
   try {
     NProgress.start();
-    return await Zipkin.getTraces(serviceName, start, end, limit, minDuration, spanName,
-      queryAnnotation);
+    return await Zipkin.getTraces(query.serviceName, query.start, query.end, query.limit,
+      query.minDuration, query.spanName, query.queryAnnotation);
   } finally {
     NProgress.done();
   }
