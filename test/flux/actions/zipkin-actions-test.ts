@@ -23,7 +23,7 @@ test('constructs a valid action to get traces', async t => {
     },
   });
 
-  const action = ZipkinActions.getTraces();
+  const action = ZipkinActions.getTraces({});
   t.deepEqual(action.type, 'GET_TRACES');
   const payload = await action.payload;
   t.deepEqual(payload, traces);
