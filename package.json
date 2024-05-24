@@ -136,7 +136,7 @@
   "dependencies": {
     "commander": "^2.9.0",
     "express": "^4.14.0",
-    "request": "^2.79.0"
+    "request": "^2.88.2"
   },
   "repository": {
     "type": "git",
